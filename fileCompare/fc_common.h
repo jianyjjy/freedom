@@ -8,21 +8,7 @@
 #ifndef FC_COMMON_H_
 #define FC_COMMON_H_
 
-
-#include <cstdio>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-
-
-#include <algorithm>
-#include <deque>
-#include <map>
-#include <thread>
-#include <chrono>
-#include <memory>
-#include <exception>
+#include "common.h"
 
 class CompareResultInterface;
 class CompareFile;

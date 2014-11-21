@@ -9,21 +9,7 @@
 #define PP_COMMON_H_
 
 
-#include <cstdio>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-
-
-#include <algorithm>
-#include <deque>
-#include <map>
-#include <thread>
-#include <chrono>
-#include <memory>
-#include <exception>
-
+#include "common.h"
 
 
 #endif /* PP_COMMON_H_ */
