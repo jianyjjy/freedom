@@ -4,6 +4,7 @@ project (hlsPlaylist)
 set (HLSPL_SRC MasterPlaylist.cpp)
 LIST(APPEND HLSPL_SRC MediaPlaylist.cpp)
 LIST(APPEND HLSPL_SRC IFramePlaylist.cpp)
+LIST(APPEND HLSPL_SRC VariantsInfo.cpp)
 
 include_directories(.)
 

@@ -9,14 +9,14 @@
 #include "PlaylistFactory.h"
 #include "PlaylistManager.h"
 
-PlaylistManager::PlaylistManager(char *master_playlist_name)
+PlaylistManager::PlaylistManager(char *master_URI)
 {
 	master = NULL;
 	groups.clear();
 	try
 	{
 		PlaylistFactory * factory = PlaylistFactory::get_instance();
-		master = factory->getDOM(master_playlist_name);
+		master = factory->getDOM(master_URI);
 		create_groups();
 	}
 	catch (std::exception & e)

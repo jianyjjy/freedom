@@ -11,7 +11,7 @@
 #include "m3u8/Tag.h"
 
 class Section {
-	std::list<Tag> tags;
+	std::deque<Tag> tags;
 
 	std::string path;
 	std::string locator;
@@ -51,6 +51,12 @@ public:
 		oss << "\n";
 		return oss.str();
 	};
+	std::string get_URI()
+	{
+		std::ostringstream oss;
+		oss << path << locator;
+		return oss.str();
+	}
 	void set_path(const char *p)
 	{
 		path = std::string(p);
@@ -125,6 +131,7 @@ public:
 
 	};
 
+	friend class VariantsInfo;
 };
 
 #endif /* SECTION_H_ */

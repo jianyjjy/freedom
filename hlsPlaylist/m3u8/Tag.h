@@ -13,7 +13,7 @@
 class Tag {
 	std::string id;
 	std::string output_format;
-	std::list<Property *> properties;
+	std::deque<Property *> properties;
 
 public:
 	//Tag(const Tag &t): id(t.id), output_format(t.output_format), properties(t.properties){};
@@ -42,11 +42,11 @@ public:
 		for(auto it = properties.begin(), ite= properties.end(); it != ite ;)
 		{
 			if((*it)->get_name() != NULL)
-				oss << (*it)->get_name()->get_content();
+				oss << (*it)->get_name()->asString();
 			if((*it)->get_value() != NULL)
 			{
 				oss << "=";
-				oss << (*it)->get_value()->get_content();
+				oss << (*it)->get_value()->asString();
 			}
 			it++;
 			if(it != ite)
@@ -75,7 +75,7 @@ public:
 		Name<T>* name = new Name<T>(str);
 		for(auto it = properties.begin(), ite= properties.end(); it != ite ;it++)
 		{
-			if((*it)->get_name()->get_content() == name->get_content()){
+			if((*it)->get_name()->asString() == name->get_content()){
 				properties.erase(it);
 				break;
 			}
@@ -91,13 +91,15 @@ public:
 		Name<T2>* value = new Name<T2>(val);
 		for(auto it = properties.begin(), ite= properties.end(); it != ite ;it++)
 		{
-			if((*it)->get_name()->get_content() == name->get_content()){
+			if((*it)->get_name()->asString() == name->get_content()){
 				(*it)->set_value(value);
 				break;
 			}
 		}
 		delete name;
 	}
+
+	friend class VariantsInfo;
 };
 
 

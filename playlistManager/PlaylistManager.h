@@ -19,7 +19,7 @@ class PlaylistManager {
 	void create_groups();
 
 public:
-	PlaylistManager(char *master_playlist_name);
+	PlaylistManager(char *master_URI);
 	virtual ~PlaylistManager();
 	void marshall();
 };
