@@ -8,7 +8,8 @@ link_directories(/usr/local/lib)
 
 set(CMAKE_CXX_FLAGS "-O0 -g3 -Wall -fPIC -std=c++0x -D_GLIBCXX_USE_NANOSLEEP")
 
-
+add_subdirectory(fileCompare)
 add_subdirectory(playlistFactory)
 add_subdirectory(hlsPlaylist)
-add_subdirectory(test)
+add_subdirectory(test/file-compare)
+add_subdirectory(test/playlistParser)

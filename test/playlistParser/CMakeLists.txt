@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (playlistParserTool)
 
-include_directories(../playlistFactory ../hlsPlaylist .)
+include_directories(../../playlistFactory ../../hlsPlaylist .)
 add_executable(playlistParserTool unittest.cpp)
 
 
