@@ -57,7 +57,7 @@ void PlaylistManager::marshall()
 {
 	std::cout << "--------------------------------------------------\n";
 	std::cout << "master playlist " << std::endl;
-	master->marshall();
+	std::cout << master->marshall();
 
 	for(unsigned int i = 0; i < groups.size(); i++)
 		groups[i]->marshall();

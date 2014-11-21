@@ -235,7 +235,10 @@ public:
 	virtual std::string marshall()
 	{
 		PRINT(std::cout << "marshall()\n");
-		return playlist.marshall();
+		std::ostringstream oss;
+		oss << url << std::endl;
+		oss << playlist.marshall() << std::endl;
+		return oss.str();
 	}
 
 	virtual unsigned int get_variants_count()

@@ -36,14 +36,14 @@ void VariantPlaylist::marshall()
 	{
 		std::cout << "--------------------------------------------------\n";
 		std::cout << "Media playlist " << std::endl;
-		media->marshall();
+		std::cout << media->marshall();
 	}
 
 	if(iframe)
 	{
 		std::cout << "--------------------------------------------------\n";
 		std::cout << "Iframe playlist " << std::endl;
-		iframe->marshall();
+		std::cout << iframe->marshall();
 	}
 
 }
