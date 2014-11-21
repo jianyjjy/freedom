@@ -32,9 +32,9 @@ enum RENDITION_GROUP_E
 class PlaylistInterface
 {
 protected:
-	std::string playlist_path;
-	std::string playlist_name;
-	std::string playlist_url;
+	std::string path;
+	std::string name;
+	std::string url;
 
 	Playlist playlist;
 	unsigned int node_count;
@@ -143,10 +143,24 @@ protected:
 
 
 public:
-	PlaylistInterface ()
+	PlaylistInterface (std::string filename)
 	{
 		node_count = 0;
 		group = NONE;
+		url = filename;
+		size_t offset = url.find_last_of("/");
+		if(offset != std::string::npos)
+		{
+			path = url.substr(0, offset);
+			name = url.substr(offset+1, url.size() - offset);
+		}
+		else
+			name = url;
+	}
+
+	virtual ~PlaylistInterface()
+	{
+
 	}
 
 	virtual void add_header(std::deque<std::string> & strqueue)

@@ -7,7 +7,8 @@
 
 #include "IFramePlaylist.h"
 
-IFramePlaylist::IFramePlaylist() {
+IFramePlaylist::IFramePlaylist(std::string filename) : PlaylistInterface(filename)
+{
 	playlist_type = IFRAME;
 	group = VIDEO;
 }

@@ -7,7 +7,8 @@
 
 #include "MediaPlaylist.h"
 
-MediaPlaylist::MediaPlaylist() {
+MediaPlaylist::MediaPlaylist(std::string filename) : PlaylistInterface(filename)
+{
 	playlist_type = MEDIA;
 	group = VIDEO;
 }

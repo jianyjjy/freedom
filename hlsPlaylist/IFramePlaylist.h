@@ -15,7 +15,7 @@ class IFramePlaylist : public PlaylistInterface
 {
 
 public:
-	IFramePlaylist();
+	IFramePlaylist(std::string filename);
 	virtual ~IFramePlaylist();
 };
 

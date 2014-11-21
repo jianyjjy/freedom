@@ -8,9 +8,17 @@
 #ifndef PLAYLISTMANAGER_H_
 #define PLAYLISTMANAGER_H_
 
+#include "PlaylistInterface.h"
+#include "RenditionGroups.h"
+
 class PlaylistManager {
+
+	PlaylistInterface* master;
+	std::deque<RenditionGroups *> groups;
+
+
 public:
-	PlaylistManager();
+	PlaylistManager(char *master_playlist_name);
 	virtual ~PlaylistManager();
 };
 

@@ -14,7 +14,7 @@
 class MasterPlaylist : public PlaylistInterface
 {
 public:
-	MasterPlaylist();
+	MasterPlaylist(std::string filename);
 	virtual ~MasterPlaylist();
 };
 

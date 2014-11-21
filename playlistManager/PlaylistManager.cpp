@@ -5,13 +5,25 @@
  *      Author: satram
  */
 
+#include "common.h"
 #include "PlaylistManager.h"
 
-PlaylistManager::PlaylistManager() {
-	// TODO Auto-generated constructor stub
+PlaylistManager::PlaylistManager(char *master_playlist_name)
+{
+	master = NULL;
+	groups.clear();
 
 }
 
-PlaylistManager::~PlaylistManager() {
-	// TODO Auto-generated destructor stub
+PlaylistManager::~PlaylistManager()
+{
+	if(master)
+	{
+		delete(master);
+		master = NULL;
+	}
+
+	for(unsigned int i = 0; i < groups.size(); i++)
+		delete(groups[i]);
+	groups.clear();
 }

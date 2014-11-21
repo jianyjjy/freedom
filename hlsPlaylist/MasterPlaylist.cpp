@@ -7,7 +7,8 @@
 
 #include "MasterPlaylist.h"
 
-MasterPlaylist::MasterPlaylist() {
+MasterPlaylist::MasterPlaylist(std::string filename) : PlaylistInterface(filename)
+{
 	playlist_type = MASTER;
 }
 

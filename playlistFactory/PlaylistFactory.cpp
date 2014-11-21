@@ -91,7 +91,7 @@ void PlaylistFactory::identify_playlist_type()
 			if(master_segment_tags.find(tag) != master_segment_tags.end())
 			{
 				std::cout << "create master DOM" << std::endl;
-				playlist = new MasterPlaylist();
+				playlist = new MasterPlaylist(filename);
 				header = header_tags;
 				segment = master_segment_tags;
 				break;
@@ -99,7 +99,7 @@ void PlaylistFactory::identify_playlist_type()
 			else if(media_header_tags.find(tag) != media_header_tags.end())
 			{
 				std::cout << "create media DOM" << std::endl;
-				playlist = new MediaPlaylist();
+				playlist = new MediaPlaylist(filename);
 				header = media_header_tags;
 				segment = media_segment_tags;
 				footer = footer_tags;
@@ -108,7 +108,7 @@ void PlaylistFactory::identify_playlist_type()
 			else if(iframe_header_tags.find(tag) != iframe_header_tags.end())
 			{
 				std::cout << "create iframe DOM" << std::endl;
-				playlist = new IFramePlaylist();
+				playlist = new IFramePlaylist(filename);
 				header = iframe_header_tags;
 				segment = media_segment_tags;
 				footer = footer_tags;
