@@ -116,12 +116,16 @@ void CompareFile::compare()
 				}
 			if(results_queue.size() > prev_size) continue;
 
-			if(i+1 < src_lines.size() && j+1 < dst_lines.size() && src_lines[i+1].compare(dst_lines[j+1]) == 0) //A(n+1) == B(n+1)
-			{
-				CompareResultInterface *result = new ModifiedLine(i, j, src_lines[i], dst_lines[j]);
-				results_queue.push_back(result);
-				i++; j++;
-			}
+			for(unsigned int k = 1; k < DEPTH; k++)
+				if(i+k < src_lines.size() && j+k < dst_lines.size() && src_lines[i+k].compare(dst_lines[j+k]) == 0) //A(n+1) == B(n+1)
+				{
+					CompareResultInterface *result = new ModifiedLine(i, j, src_lines[i], dst_lines[j]);
+					for(unsigned int n = 1; n < k; n++)
+						result->add_line(src_lines[i+n], dst_lines[j+n]);
+					results_queue.push_back(result);
+					i++; j++;
+					break;
+				}
 			if(results_queue.size() > prev_size) continue;
 
 			i++; j++;

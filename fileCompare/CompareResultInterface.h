@@ -135,8 +135,8 @@ public:
 	}
 	void add_line(std::string str1, std::string str2)
 	{
-		src_str += str1;
-		dst_str += str2;
+		src_str += std::string("\n< ") + str1;
+		dst_str += std::string("\n> ") + str2;
 	}
 
 	std::string marshall()
