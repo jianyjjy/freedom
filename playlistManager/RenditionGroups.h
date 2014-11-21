@@ -12,8 +12,6 @@
 
 class RenditionGroups
 {
-
-public:
 	enum GROUPS_E
 	{
 		VIDEO,
@@ -22,14 +20,18 @@ public:
 		CLOSED_CAPTIONS
 	};
 
-	RenditionGroups();
-	virtual ~RenditionGroups();
 
-
-private:
 	GROUPS_E type;
 	unsigned int sessionId;
 	std::deque<VariantPlaylist *> variants;
+
+public:
+
+	RenditionGroups();
+	virtual ~RenditionGroups();
+	void marshall();
+
+
 
 };
 

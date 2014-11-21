@@ -63,6 +63,11 @@ public:
 			}
 		}
 	}
+
+	unsigned int get_section_count()
+	{
+		return section_list.size();
+	}
 };
 
 #endif /* PLAYLIST_H_ */

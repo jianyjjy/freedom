@@ -21,6 +21,7 @@ class PlaylistManager {
 public:
 	PlaylistManager(char *master_playlist_name);
 	virtual ~PlaylistManager();
+	void marshall();
 };
 
 #endif /* PLAYLISTMANAGER_H_ */

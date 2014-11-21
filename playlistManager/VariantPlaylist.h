@@ -18,6 +18,7 @@ class VariantPlaylist {
 public:
 	VariantPlaylist();
 	virtual ~VariantPlaylist();
+	void marshall();
 };
 
 #endif /* VARIANTPLAYLIST_H_ */

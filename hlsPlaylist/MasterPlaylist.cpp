@@ -12,11 +12,15 @@ MasterPlaylist::MasterPlaylist(std::string filename) : PlaylistInterface(filenam
 	playlist_type = MASTER;
 }
 
-MasterPlaylist::~MasterPlaylist() {
-	// TODO Auto-generated destructor stub
+MasterPlaylist::~MasterPlaylist()
+{
+
 }
 
 
-
+unsigned int MasterPlaylist::get_variants_count()
+{
+	return playlist.get_section_count();
+}
 
 

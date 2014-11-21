@@ -16,6 +16,8 @@ class MasterPlaylist : public PlaylistInterface
 public:
 	MasterPlaylist(std::string filename);
 	virtual ~MasterPlaylist();
+
+	unsigned int get_variants_count();
 };
 
 #endif /* MASTERPLAYLIST_H_ */

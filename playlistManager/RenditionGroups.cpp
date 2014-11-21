@@ -20,3 +20,11 @@ RenditionGroups::~RenditionGroups()
 		delete(variants[i]);
 	variants.clear();
 }
+
+void RenditionGroups::marshall()
+{
+	std::cout << "--------------------------------------------------\n";
+	std::cout << "Rendition Group " << sessionId << std::endl;
+	for(unsigned int i = 0; i < variants.size(); i++)
+		variants[i]->marshall();
+}

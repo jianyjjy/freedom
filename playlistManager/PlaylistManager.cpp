@@ -44,7 +44,21 @@ PlaylistManager::~PlaylistManager()
 
 void PlaylistManager::create_groups()
 {
+	//get num variants
+	unsigned int variants_count = master->get_variants_count();
+
 	//ask master about variants list
 
+
 	//create groups with that
+}
+
+void PlaylistManager::marshall()
+{
+	std::cout << "--------------------------------------------------\n";
+	std::cout << "master playlist " << std::endl;
+	master->marshall();
+
+	for(unsigned int i = 0; i < groups.size(); i++)
+		groups[i]->marshall();
 }

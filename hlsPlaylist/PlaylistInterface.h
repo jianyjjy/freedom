@@ -237,6 +237,11 @@ public:
 		PRINT(std::cout << "marshall()\n");
 		return playlist.marshall();
 	}
+
+	virtual unsigned int get_variants_count()
+	{
+		throw std::runtime_error("get_variants_count not implemented for this playlist");
+	};
 };
 
 #undef PRINT
