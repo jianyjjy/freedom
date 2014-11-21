@@ -16,6 +16,7 @@ class PlaylistManager {
 	PlaylistInterface* master;
 	std::deque<RenditionGroups *> groups;
 
+	void create_groups();
 
 public:
 	PlaylistManager(char *master_playlist_name);
