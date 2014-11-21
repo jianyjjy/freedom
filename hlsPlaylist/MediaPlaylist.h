@@ -8,7 +8,6 @@
 #ifndef MEDIAPLAYLIST_H_
 #define MEDIAPLAYLIST_H_
 
-#include "playlist_common.h"
 #include "PlaylistInterface.h"
 
 

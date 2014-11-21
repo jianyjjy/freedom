@@ -8,8 +8,10 @@
 #ifndef PLAYLISTINTERFACE_H_
 #define PLAYLISTINTERFACE_H_
 
-#include "playlist_common.h"
+#include "common.h"
 #include "m3u8/Playlist.h"
+
+class VariantsInfo;
 
 enum PLAYLIST_E
 {
@@ -243,8 +245,13 @@ public:
 
 	virtual unsigned int get_variants_count()
 	{
-		throw std::runtime_error("get_variants_count not implemented for this playlist");
+		throw std::runtime_error("get_variants_count -- not implemented for this playlist");
 	};
+
+	virtual std::deque<VariantsInfo *> get_variants()
+	{
+		throw std::runtime_error("get_variants -- not implemented for this playlist");
+	}
 };
 
 #undef PRINT

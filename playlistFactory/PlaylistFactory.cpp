@@ -5,7 +5,7 @@
  *      Author: satram
  */
 
-
+#include "common.h"
 #include "MasterPlaylist.h"
 #include "MediaPlaylist.h"
 #include "IFramePlaylist.h"

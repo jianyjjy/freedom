@@ -8,7 +8,6 @@
 #ifndef IFRAMEPLAYLIST_H_
 #define IFRAMEPLAYLIST_H_
 
-#include "playlist_common.h"
 #include "PlaylistInterface.h"
 
 class IFramePlaylist : public PlaylistInterface

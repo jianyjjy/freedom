@@ -8,6 +8,7 @@
 #include "common.h"
 #include "PlaylistFactory.h"
 #include "PlaylistManager.h"
+#include "VariantsInfo.h"
 
 PlaylistManager::PlaylistManager(char *master_URI)
 {
@@ -46,11 +47,17 @@ void PlaylistManager::create_groups()
 {
 	//get num variants
 	unsigned int variants_count = master->get_variants_count();
+	if(variants_count == 0)
+		throw std::runtime_error("number of variants in master playlist can't be zero");
 
 	//ask master about variants list
-
+	std::deque<VariantsInfo *> variants = master->get_variants();
 
 	//create groups with that
+	for(unsigned int i = 0; i < variants.size(); i++)
+	{
+		//place holder
+	}
 }
 
 void PlaylistManager::marshall()

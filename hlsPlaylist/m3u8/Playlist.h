@@ -14,6 +14,8 @@
 class Playlist {
 	std::list<Section> section_list;
 	std::ostringstream oss;
+	std::deque<std::string> names;
+
 public:
 	Playlist(){};
 	virtual ~Playlist(){};
@@ -67,6 +69,13 @@ public:
 	unsigned int get_section_count()
 	{
 		return section_list.size();
+	}
+
+	std::deque<std::string>& get_section_names()
+	{
+		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
+			names.push_back(it->get_name());
+		return names;
 	}
 };
 

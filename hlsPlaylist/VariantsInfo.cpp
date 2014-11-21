@@ -15,6 +15,11 @@ VariantsInfo::VariantsInfo(Section *section)
 	std::string stream_tag("EXT-X-STREAM-INF");
 	std::string iframe_tag("EXT-X-I-FRAME-STREAM-INF");
 
+	group_id = 0;
+	media_program_id = 0;
+	iframe_program_id = 0;
+
+
 	for(unsigned int i = 0; i < section->tags.size(); i++)
 	{
 		if(media_tag == section->tags[i].get_name())
