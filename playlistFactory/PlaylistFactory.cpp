@@ -126,7 +126,7 @@ STATE_E PlaylistFactory::get_new_state(std::string & tag)
 		 new_state = SEGMENT;
 		 if(segment_start_key.empty())
 		 {
-			 if(tag.compare("#EXT-X-KEY") == 0 || tag.compare("#EXTINF") == 0 || tag.compare("#EXT-X-STREAM-INF") == 0)
+			 if(segment.find(tag) != segment.end())
 			 {
 				 segment_start_key = tag;
 				 new_state = NEW_SEGMENT;
