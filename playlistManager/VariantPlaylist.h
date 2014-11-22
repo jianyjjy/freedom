@@ -16,7 +16,7 @@ class VariantPlaylist {
 	PlaylistInterface *iframe;
 
 public:
-	VariantPlaylist();
+	VariantPlaylist(VariantsInfo *variants_info);
 	virtual ~VariantPlaylist();
 	void marshall();
 };

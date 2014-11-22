@@ -42,6 +42,19 @@ PlaylistManager::~PlaylistManager()
 	groups.clear();
 }
 
+RenditionGroups * PlaylistManager::get_group(unsigned int id)
+{
+	for(unsigned int i = 0; i < groups.size(); i++)
+	{
+		if(groups[i]->get_group_id() == id)
+			return groups[i];
+	}
+	RenditionGroups *new_group = new RenditionGroups(id);
+	groups.push_back(new_group);
+	return new_group;
+}
+
+
 
 void PlaylistManager::create_groups()
 {
@@ -51,12 +64,13 @@ void PlaylistManager::create_groups()
 		throw std::runtime_error("number of variants in master playlist can't be zero");
 
 	//ask master about variants list
-	std::deque<VariantsInfo *> variants = master->get_variants();
+	std::deque<VariantsInfo *> variants_info = master->get_variants();
 
 	//create groups with that
-	for(unsigned int i = 0; i < variants.size(); i++)
+	for(unsigned int i = 0; i < variants_info.size(); i++)
 	{
-		//place holder
+		RenditionGroups *group = get_group(variants_info[i]->get_group_id());
+		group->add_variant(variants_info[i]);
 	}
 }
 

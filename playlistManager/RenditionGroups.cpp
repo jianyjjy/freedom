@@ -9,9 +9,10 @@
 #include "RenditionGroups.h"
 
 
-RenditionGroups::RenditionGroups()
+RenditionGroups::RenditionGroups(unsigned int id)
 {
 	variants.clear();
+	session_id = id;
 }
 
 RenditionGroups::~RenditionGroups()
@@ -24,7 +25,14 @@ RenditionGroups::~RenditionGroups()
 void RenditionGroups::marshall()
 {
 	std::cout << "--------------------------------------------------\n";
-	std::cout << "Rendition Group " << sessionId << std::endl;
+	std::cout << "Rendition Group " << session_id << std::endl;
 	for(unsigned int i = 0; i < variants.size(); i++)
 		variants[i]->marshall();
+}
+
+
+void RenditionGroups::add_variant(VariantsInfo *variant_info)
+{
+	VariantPlaylist *var = new VariantPlaylist(variant_info);
+	variants.push_back(var);
 }

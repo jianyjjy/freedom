@@ -48,6 +48,18 @@ class VariantsInfo
 public:
 	VariantsInfo(Section *section);
 	virtual ~VariantsInfo();
+
+	unsigned int get_group_id()
+	{
+		if(group_id != std::numeric_limits<unsigned int>::max())
+			return group_id;
+		else if(media_program_id != std::numeric_limits<unsigned int>::max())
+			return media_program_id;
+		else if(iframe_program_id != std::numeric_limits<unsigned int>::max())
+			return iframe_program_id;
+		else
+			return 0;
+	}
 };
 
 #endif /* VARIANTSINFO_H_ */

@@ -17,6 +17,7 @@ class PlaylistManager {
 	std::deque<RenditionGroups *> groups;
 
 	void create_groups();
+	RenditionGroups * get_group(unsigned int id);
 
 public:
 	PlaylistManager(char *master_URI);

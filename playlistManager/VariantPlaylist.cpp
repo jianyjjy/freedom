@@ -9,7 +9,7 @@
 #include "PlaylistInterface.h"
 #include "VariantPlaylist.h"
 
-VariantPlaylist::VariantPlaylist()
+VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
 	media = NULL;
 	iframe = NULL;

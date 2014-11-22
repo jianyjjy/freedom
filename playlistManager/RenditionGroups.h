@@ -22,14 +22,20 @@ class RenditionGroups
 
 
 	GROUPS_E type;
-	unsigned int sessionId;
+	unsigned int session_id;
 	std::deque<VariantPlaylist *> variants;
 
 public:
 
-	RenditionGroups();
+	RenditionGroups(unsigned int id);
 	virtual ~RenditionGroups();
+	void add_variant(VariantsInfo *variant_info);
 	void marshall();
+
+	unsigned int get_group_id()
+	{
+		return session_id;
+	}
 
 
 
