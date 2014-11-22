@@ -73,6 +73,7 @@ public:
 
 	std::deque<std::string>& get_section_names()
 	{
+		names.clear();
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
 			names.push_back(it->get_name());
 		return names;

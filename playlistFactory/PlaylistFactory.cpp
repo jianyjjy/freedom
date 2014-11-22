@@ -170,7 +170,6 @@ bool PlaylistFactory::update_state(STATE_E new_state, std::string &tag)
 			break;
 		}
 		PRINT(if(state_change) std::cout << "state change: " << get_state_name(state) << " ... " << get_state_name(new_state) << std::endl);
-		state = new_state;
 	}
 	catch (std::exception & e)
 	{
@@ -194,18 +193,17 @@ void PlaylistFactory::process()
 
 		STATE_E new_state = get_new_state(tag);
 
-		STATE_E prev_state = state;
 		bool state_change = false;
 		if(new_state != INVALID)
 			state_change = update_state(new_state, tag);
 
 		if(state_change)
 		{
-			 if(prev_state == SEGMENT || prev_state == NEW_SEGMENT)
+			 if(state == SEGMENT || state == NEW_SEGMENT)
 				 playlist->add_section(section);
-			 else if(prev_state == HEADER)
+			 else if(state == HEADER)
 				 playlist->add_header(section);
-			 else if(prev_state == FOOTER)
+			 else if(state == FOOTER)
 				 playlist->add_footer(section);
 			section.clear();
 			section.push_back(lines[i]);
@@ -217,6 +215,8 @@ void PlaylistFactory::process()
 			if(!tag.empty())
 				section.push_back(lines[i]);
 		}
+		if(new_state != INVALID) state = new_state;
+
 	}
 	if(section.size() > 0)
 		playlist->add_section(section);

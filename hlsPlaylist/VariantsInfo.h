@@ -74,11 +74,14 @@ public:
 	std::string marshall()
 	{
 		std::ostringstream oss;
-		oss << "Program ID " << media_program_id << std::endl;
-		oss << "URI " << media_URI << std::endl;
-		oss << "Iframe URI " << iframe_URI << std::endl;
-		oss << "BW " << media_bandwidth << std::endl;
-		oss << "Iframe BW " << iframe_bandwidth << std::endl;
+		oss << "ProgramID " << media_program_id << "\t";
+		oss << "URI " << media_URI << "\t";
+		oss << "IfrURI " << iframe_URI << "\t";
+		oss << "BW " << media_bandwidth << "\t";
+		oss << "IfrBW " << iframe_bandwidth << "\t";
+		oss << "wd " << width << "\t";
+		oss << "ht " << height << "\t";
+		oss << std::endl;
 
 		return oss.str();
 	}

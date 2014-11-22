@@ -67,12 +67,12 @@ void PlaylistManager::create_groups()
 
 	//ask master about variants list
 	std::deque<VariantsInfo *> variants_info = master->get_variants();
+	std::cout << "variants_info size " << variants_info.size() << std::endl;
 
 	//create groups with that
 	for(unsigned int i = 0; i < variants_info.size(); i++)
 	{
 		RenditionGroups *group = get_group(variants_info[i]->get_group_id());
-		variants_info[i]->marshall();
 		group->add_variant(variants_info[i]);
 	}
 }

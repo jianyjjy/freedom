@@ -187,7 +187,7 @@ public:
 		for(unsigned int i = 0; i < strqueue.size(); i++)
 		{
 			//PRINT(std::cout << strqueue[i] << std::endl);
-			if(strqueue[i].find(".ts") != std::string::npos)
+			if(strqueue[i].find(".ts") != std::string::npos || strqueue[i].find(".m3u8") != std::string::npos)
 			{
 				size_t path_offset =  strqueue[i].find_last_of("/");
 				if(path_offset != std::string::npos)

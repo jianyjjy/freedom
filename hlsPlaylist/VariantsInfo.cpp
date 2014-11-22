@@ -10,10 +10,10 @@
 
 VariantsInfo::VariantsInfo(Section *section)
 {
-
-	std::string media_tag("EXT-X-MEDIA");
-	std::string stream_tag("EXT-X-STREAM-INF");
-	std::string iframe_tag("EXT-X-I-FRAME-STREAM-INF");
+	std::cout << "creating variant info for section " << section->get_name() <<std::endl;
+	std::string media_tag("#EXT-X-MEDIA");
+	std::string stream_tag("#EXT-X-STREAM-INF");
+	std::string iframe_tag("#EXT-X-I-FRAME-STREAM-INF");
 
 	group_id = std::numeric_limits<unsigned int>::max();
 	media_program_id = std::numeric_limits<unsigned int>::max();
