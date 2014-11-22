@@ -70,6 +70,18 @@ public:
 	{
 		return iframe_URI;
 	}
+
+	std::string marshall()
+	{
+		std::ostringstream oss;
+		oss << "Program ID " << media_program_id << std::endl;
+		oss << "URI " << media_URI << std::endl;
+		oss << "Iframe URI " << iframe_URI << std::endl;
+		oss << "BW " << media_bandwidth << std::endl;
+		oss << "Iframe BW " << iframe_bandwidth << std::endl;
+
+		return oss.str();
+	}
 };
 
 #endif /* VARIANTSINFO_H_ */

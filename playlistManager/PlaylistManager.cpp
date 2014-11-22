@@ -63,6 +63,8 @@ void PlaylistManager::create_groups()
 	if(variants_count == 0)
 		throw std::runtime_error("number of variants in master playlist can't be zero");
 
+	std::cout << "variants-count " << variants_count << std::endl;
+
 	//ask master about variants list
 	std::deque<VariantsInfo *> variants_info = master->get_variants();
 
@@ -70,6 +72,7 @@ void PlaylistManager::create_groups()
 	for(unsigned int i = 0; i < variants_info.size(); i++)
 	{
 		RenditionGroups *group = get_group(variants_info[i]->get_group_id());
+		variants_info[i]->marshall();
 		group->add_variant(variants_info[i]);
 	}
 }

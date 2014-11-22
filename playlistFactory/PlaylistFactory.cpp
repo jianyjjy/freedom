@@ -140,7 +140,7 @@ STATE_E PlaylistFactory::get_new_state(std::string & tag)
 	 new_state = HEADER;
 	else if(footer.find(tag) != footer.end())
 	 new_state = FOOTER;
-	PRINT(std::cout << "state is " << new_state << " for " << tag << std::endl;)
+	PRINT(std::cout << "state is " << get_state_name(new_state) << " for " << tag << std::endl;)
 	return new_state;
 }
 
@@ -169,7 +169,7 @@ bool PlaylistFactory::update_state(STATE_E new_state, std::string &tag)
 			throw std::runtime_error("Invalid state");
 			break;
 		}
-		PRINT(if(state_change) std::cout << "state change: " << state << " ... " << new_state << std::endl);
+		PRINT(if(state_change) std::cout << "state change: " << get_state_name(state) << " ... " << get_state_name(new_state) << std::endl);
 		state = new_state;
 	}
 	catch (std::exception & e)
@@ -194,17 +194,18 @@ void PlaylistFactory::process()
 
 		STATE_E new_state = get_new_state(tag);
 
+		STATE_E prev_state = state;
 		bool state_change = false;
 		if(new_state != INVALID)
 			state_change = update_state(new_state, tag);
 
 		if(state_change)
 		{
-			 if(state == SEGMENT || state == NEW_SEGMENT)
+			 if(prev_state == SEGMENT || prev_state == NEW_SEGMENT)
 				 playlist->add_section(section);
-			 else if(state == HEADER)
+			 else if(prev_state == HEADER)
 				 playlist->add_header(section);
-			 else if(state == FOOTER)
+			 else if(prev_state == FOOTER)
 				 playlist->add_footer(section);
 			section.clear();
 			section.push_back(lines[i]);
@@ -221,5 +222,23 @@ void PlaylistFactory::process()
 		playlist->add_section(section);
 
 }
+
+#define PROCESS_VAL(p) case(p): str = #p; break;
+const char * PlaylistFactory::get_state_name(STATE_E state)
+{
+	const char *str = 0;
+	switch(state)
+	{
+		PROCESS_VAL(INVALID)
+		PROCESS_VAL(BEGIN)
+		PROCESS_VAL(HEADER)
+		PROCESS_VAL(NEW_SEGMENT)
+		PROCESS_VAL(SEGMENT)
+		PROCESS_VAL(FOOTER)
+	}
+	return str;
+}
+#undef PROCESS_VAL
+
 
 #undef PRINT

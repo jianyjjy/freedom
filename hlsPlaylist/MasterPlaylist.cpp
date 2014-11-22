@@ -25,7 +25,16 @@ MasterPlaylist::~MasterPlaylist()
 
 unsigned int MasterPlaylist::get_variants_count()
 {
-	return playlist.get_section_count();
+	unsigned int count = 0;
+	std::deque<std::string> names = playlist.get_section_names();
+	for(unsigned int i = 0; i < names.size(); i++)
+	{
+		std::cout << names[i] << std::endl;
+		if(names[i].compare("header") == 0 || names[i].compare("footer") == 0)
+			continue;
+		count++;
+	}
+	return count;
 }
 
 

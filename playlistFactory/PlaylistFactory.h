@@ -53,7 +53,7 @@ class PlaylistFactory {
 
 	STATE_E state;
 	std::string segment_start_key;
-
+	const char * get_state_name(STATE_E state);
 public:
 
 	static PlaylistFactory * get_instance()

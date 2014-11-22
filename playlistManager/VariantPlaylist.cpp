@@ -17,11 +17,19 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 	iframe = NULL;
 	PlaylistFactory * factory = PlaylistFactory::get_instance();
 
-	if(!variants_info->get_media_URI().empty())
-		media = factory->getDOM(variants_info->get_media_URI().c_str());
+	std::string media_URI = variants_info->get_media_URI();
+	if(!media_URI.empty())
+	{
+		std::cout << "media URI " << media_URI << std::endl;
+		media = factory->getDOM(media_URI.c_str());
+	}
 
-	if(!variants_info->get_iframe_URI().empty())
-		iframe = factory->getDOM(variants_info->get_iframe_URI().c_str());
+	std::string iframe_URI = variants_info->get_iframe_URI();
+	if(!iframe_URI.empty())
+	{
+		std::cout << "iframe URI " << iframe_URI << std::endl;
+		iframe = factory->getDOM(iframe_URI.c_str());
+	}
 }
 
 VariantPlaylist::~VariantPlaylist()
