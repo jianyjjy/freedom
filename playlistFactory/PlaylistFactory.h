@@ -73,6 +73,10 @@ public:
 			delete (instance);
 	}
 	PlaylistInterface *getDOM(char *str);
+	PlaylistInterface *getDOM(const char *str)
+	{
+		return getDOM((char *)str);
+	}
 };
 
 #endif /* PLAYLISTPARSER_H_ */

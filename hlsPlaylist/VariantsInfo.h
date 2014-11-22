@@ -60,6 +60,16 @@ public:
 		else
 			return 0;
 	}
+
+	std::string get_media_URI()
+	{
+		return media_URI;
+	}
+
+	std::string get_iframe_URI()
+	{
+		return iframe_URI;
+	}
 };
 
 #endif /* VARIANTSINFO_H_ */

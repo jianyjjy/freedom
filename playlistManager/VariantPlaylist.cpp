@@ -8,12 +8,20 @@
 #include "common.h"
 #include "PlaylistInterface.h"
 #include "VariantPlaylist.h"
+#include "VariantsInfo.h"
+#include "PlaylistFactory.h"
 
 VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
 	media = NULL;
 	iframe = NULL;
+	PlaylistFactory * factory = PlaylistFactory::get_instance();
 
+	if(!variants_info->get_media_URI().empty())
+		media = factory->getDOM(variants_info->get_media_URI().c_str());
+
+	if(!variants_info->get_iframe_URI().empty())
+		iframe = factory->getDOM(variants_info->get_iframe_URI().c_str());
 }
 
 VariantPlaylist::~VariantPlaylist()
