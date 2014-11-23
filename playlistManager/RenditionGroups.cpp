@@ -27,7 +27,11 @@ void RenditionGroups::marshall()
 	std::cout << "--------------------------------------------------\n";
 	std::cout << "Rendition Group " << session_id << std::endl;
 	for(unsigned int i = 0; i < variants.size(); i++)
+	{
+		std::cout << "--------------------------------------------------\n";
+		std::cout << "variants#" << i << std::endl;
 		variants[i]->marshall();
+	}
 }
 
 

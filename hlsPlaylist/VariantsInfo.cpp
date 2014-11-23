@@ -8,7 +8,7 @@
 #include "m3u8/Tag.h"
 #include "VariantsInfo.h"
 
-VariantsInfo::VariantsInfo(Section *section)
+VariantsInfo::VariantsInfo(Section *section, std::string master_path)
 {
 	std::cout << "creating variant info for section " << section->get_name() <<std::endl;
 	std::string media_tag("#EXT-X-MEDIA");
@@ -31,7 +31,11 @@ VariantsInfo::VariantsInfo(Section *section)
 				if(name.compare("TYPE") == 0)
 					type = ppty->get_value()->asString();
 				else if(name.compare("URI") == 0)
-					media_URI = ppty->get_value()->asString();
+				{
+					media_URI = get_quoted_string(ppty->get_value()->asString());
+					if(media_URI.find("/") == std::string::npos)
+						media_URI = master_path + media_URI;
+				}
 				else if(name.compare("GROUP-ID") == 0)
 					group_id = ppty->get_value()->asUInt();
 				else if(name.compare("LANGUAGE") == 0)
@@ -85,6 +89,8 @@ VariantsInfo::VariantsInfo(Section *section)
 					media_program_id = ppty->get_value()->asUInt();
 			}
 			media_URI = section->get_URI();
+			if(media_URI.find("/") == std::string::npos)
+				media_URI = master_path + media_URI;
 		}
 		else if(iframe_tag == section->tags[i].get_name())
 		{
@@ -97,7 +103,11 @@ VariantsInfo::VariantsInfo(Section *section)
 				else if(name.compare("AVERAGE-BANDWIDTH") == 0)
 					iframe_avg_bandwidth = ppty->get_value()->asLongLong();
 				else if(name.compare("URI") == 0)
-					iframe_URI = ppty->get_value()->asString();
+				{
+					iframe_URI = get_quoted_string(ppty->get_value()->asString());
+					if(iframe_URI.find("/") == std::string::npos)
+						iframe_URI = master_path + iframe_URI;
+				}
 				else if(name.compare("PROGRAM-ID") == 0)
 					iframe_program_id = ppty->get_value()->asUInt();
 			}

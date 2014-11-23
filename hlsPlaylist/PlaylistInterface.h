@@ -153,7 +153,7 @@ public:
 		size_t offset = url.find_last_of("/");
 		if(offset != std::string::npos)
 		{
-			path = url.substr(0, offset);
+			path = url.substr(0, offset+1);
 			name = url.substr(offset+1, url.size() - offset);
 		}
 		else
@@ -187,7 +187,7 @@ public:
 		for(unsigned int i = 0; i < strqueue.size(); i++)
 		{
 			//PRINT(std::cout << strqueue[i] << std::endl);
-			if(strqueue[i].find(".ts") != std::string::npos || strqueue[i].find(".m3u8") != std::string::npos)
+			if(strqueue[i].find(".ts") != std::string::npos || (strqueue[i].find(".m3u8") != std::string::npos  && strqueue[i].find("URI") == std::string::npos))
 			{
 				size_t path_offset =  strqueue[i].find_last_of("/");
 				if(path_offset != std::string::npos)

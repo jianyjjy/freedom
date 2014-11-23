@@ -61,16 +61,19 @@ PlaylistInterface *PlaylistFactory::getDOM(char *str)
 	segment_start_key.clear();
 	filename = std::string(str);
 	infile.open(filename);
+	lines.clear();
 	if(!infile.is_open())
 		throw std::runtime_error("unable to open the file");
 	else
 	{
+		std::cout << "opened the file " << filename << std::endl;
 		while(!infile.eof())
 		{
 			std::string src;
 			std::getline(infile, src);
 			lines.push_back(src);
 		}
+		infile.close();
 	}
 	process();
 	return playlist;

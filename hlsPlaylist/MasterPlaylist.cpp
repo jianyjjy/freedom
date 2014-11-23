@@ -46,7 +46,7 @@ std::deque<VariantsInfo *> MasterPlaylist::get_variants()
 		if(names[i].compare("header") == 0 || names[i].compare("footer") == 0)
 			continue;
 		Section& section = playlist.get_section(names[i]);
-		VariantsInfo *new_variant = new VariantsInfo(&section);
+		VariantsInfo *new_variant = new VariantsInfo(&section, path);
 		std::cout << new_variant->marshall();
 		variants.push_back(new_variant);
 	}

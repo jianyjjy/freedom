@@ -46,9 +46,16 @@ class VariantsInfo
 	unsigned int iframe_program_id;
 
 public:
-	VariantsInfo(Section *section);
+	VariantsInfo(Section *section, std::string master_path);
 	virtual ~VariantsInfo();
 
+	std::string get_quoted_string(std::string src)
+	{
+		size_t quote1 = src.find_first_of("\"");
+		size_t quote2 = src.find_last_of("\"");
+		std::string dst = src.substr(quote1+1, quote2-quote1-1);
+		return dst;
+	}
 	unsigned int get_group_id()
 	{
 		if(group_id != std::numeric_limits<unsigned int>::max())
