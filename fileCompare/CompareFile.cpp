@@ -1,153 +1,169 @@
-/*
- * CompareFile.cpp
- *
- *  Created on: Nov 10, 2014
- *      Author: satram
- */
+//CompareFile.cpp
 
 #include "CompareFile.h"
+#include "CompareFile.h"
 #include "CompareResultInterface.h"
+#include "DeletedLine.h"
+#include "AddedLine.h"
+#include "ModifiedLine.h"
 
-CompareFile::CompareFile()
-{
-}
+#include <fstream>
+#include <algorithm>
+#include <limits>
+#include <cmath>
+using namespace std;
 
-CompareFile::~CompareFile()
+#include <iostream>
+using namespace std;
+#define LOG(str) cout << "[LOG] " << str << endl;
+
+
+deque<CompareResultInterface*> CompareFile::get_result(void)
 {
-	if(results_queue.size() != 0)
+	deque<CompareResultInterface*> diff_result;
+
+	if( first_file == "" || second_file == "" )
 	{
-		for(unsigned int i = 0; i < results_queue.size(); i++)
+		//FILE NAME NOT SET
+		throw( string("EITHER OF FILE NAME NOT SET") );
+	}
+
+	deque<string> data1;
+	deque<string> data2;
+
+	{
+		ifstream ifs1(first_file);
+		ifstream ifs2(second_file);
+
+		if( !ifs1.is_open() || !ifs2.is_open() )
 		{
-			delete(results_queue[i]);
+			//INVALID FILE1 OR FILE2
+			throw( string("EITHER OF FILE IS INVALID") );
+		}
+
+		LOG("READING FILES");
+		string line_data;
+		while( !ifs1.eof() )
+		{
+			std::getline(ifs1, line_data);
+			data1.push_back(line_data);
+		}
+		while( !ifs2.eof() )
+		{
+			std::getline(ifs2, line_data);
+			data2.push_back(line_data);
+		}
+		LOG("READING FILES FINISHED");
+	}
+
+	CompareResultInterface* compare_result = nullptr;
+
+	auto itr1 = data1.begin();
+	auto itr2 = data2.begin();
+
+	while( itr1 != data1.end() && itr2 != data2.end() )
+	{
+		//READING CONTINOUS MATCHING DATA
+		if( *itr1 == *itr2 )
+		{
+			//LOG(*itr1)
+			itr1++;
+			itr2++;
+			continue;
+		}
+
+		//LOG("FOUND NON-MATCHING")
+
+		auto f_itr1 = find_first_of(itr1, data1.end(), itr2, data2.end());	//FIRST MATCHING POSITION IN data1, FROM [itr2, data2.end())
+		auto f_itr2 = find_first_of(itr2, data2.end(), itr1, data1.end());	//FIRST MATCHING POSITION IN data2, FROM [itr1, data1.end())
+
+		//LOG(*itr1)
+		//LOG(*itr2)
+		//LOG(*f_itr1)
+		//LOG(*f_itr2)
+
+		if( f_itr1 == data1.end() )	//means f_itr2 == data2.end()
+		{
+			LOG("UNABLE TO FIND NEXT MATCH")
+			break;
+		}
+
+		if( f_itr2 == itr2 )
+		{
+			compare_result = new DeletedLine(itr1-data1.begin(), itr2-data2.begin(), 0, string());
+			while( *itr1 != *itr2 )
+			{
+				compare_result->add_line(*itr1);
+				itr1++;
+			}
+		}
+		else if( f_itr1 == itr1 )
+		{
+			compare_result = new AddedLine(itr1-data1.begin(), itr2-data2.begin(), 0, string());
+			while( *itr2 != *itr1 )
+			{
+				compare_result->add_line(*itr2);
+				itr2++;
+			}
+		}
+		else	//(*f_itr1 == *f_itr2)
+		{
+			compare_result = new ModifiedLine(itr1-data1.begin(), itr2-data2.begin(), string(), string());
+			while( itr1 < f_itr1 )
+			{
+				compare_result->add_line(*itr1, string());
+				itr1++;
+			}
+			while( itr2 < f_itr2 )
+			{
+				compare_result->add_line(string(), *itr2);
+				itr2++;
+			}
+
+		}
+
+		//LOG(compare_result->marshall());
+		diff_result.push_back(compare_result);
+	}
+
+	if( itr1 == data1.end() && itr2 == data2.end() )
+		return diff_result;
+
+	if( itr2 == data2.end() )
+	{
+		compare_result = new DeletedLine(itr1-data1.begin(), itr2-data2.begin(), data1.end()-itr1, string());
+		while( itr1 != data1.end() )
+		{
+			compare_result->add_line(*itr1);
+			itr1++;
 		}
 	}
-}
-
-std::string CompareFile::get_result()
-{
-	std::ostringstream oss;
-	for(unsigned int i = 0; i < results_queue.size(); i++)
-		oss << results_queue[i]->marshall();
-	return oss.str();
-}
-
-
-void CompareFile::set_first(const char *filename)
-{
-	in1.open(filename);
-	if(!in1.is_open())
+	else if( itr1 == data1.end() )
 	{
-		std::ostringstream oss;
-		oss << "unable to open file " << filename;
-		throw std::runtime_error(oss.str());
-	}
-	readlines(in1, src_lines);
-}
-
-
-void CompareFile::set_second(const char *filename)
-{
-	in2.open(filename);
-	if(!in2.is_open())
-	{
-		std::ostringstream oss;
-		oss << "unable to open file " << filename;
-		throw std::runtime_error(oss.str());
-	}
-	readlines(in2, dst_lines);
-	compare();
-}
-
-void CompareFile::readlines(
-		std::ifstream &in,
-		std::deque<std::string> &lines)
-{
-	if(in.is_open())
-	{
-		while(!in.eof())
+		compare_result = new AddedLine(itr1-data1.begin(), itr2-data2.begin(), data2.end()-itr2, string());
+		while( itr2 != data2.end() )
 		{
-			std::string linestr;
-			std::getline(in, linestr);			//std::cout << linestr << std::endl;
-			lines.push_back(linestr);
+			compare_result->add_line(*itr2);
+			itr2++;
 		}
 	}
 	else
-		throw std::runtime_error("file is not yet opened\n");
-}
-
-#define DEPTH (5)
-
-void CompareFile::compare()
-{
-	unsigned int i = 0;
-	unsigned int j = 0;
-	for(; i < src_lines.size() && j < dst_lines.size();)
 	{
-		if(src_lines[i].compare(dst_lines[j]) == 0)
+		compare_result = new ModifiedLine(itr1-data1.begin(), itr2-data2.begin(), string(), string());
+		while( itr1 != data1.end() )
 		{
-			i++; j++;
-			continue;
+			compare_result->add_line(*itr1, string());
+			itr1++;
 		}
-		else
+		while( itr2 != data2.end() )
 		{
-			unsigned int prev_size = results_queue.size();
-
-			for(unsigned int k = 1; k < DEPTH; k++)
-				if(i+k < src_lines.size() && src_lines[i+k].compare(dst_lines[j]) == 0) //A(n+1) == B(n)
-				{
-					CompareResultInterface *result = new DeletedLine(i+1, i+k, j, src_lines[i]);
-					for(unsigned int n = 1; n < k; n++)
-						result->add_line(src_lines[i+n]);
-					results_queue.push_back(result);
-					i = i+k+1; j++;
-					break;
-				}
-			if(results_queue.size() > prev_size) continue;
-
-			for(unsigned int k = 1; k < DEPTH; k++)
-				if(j+k < dst_lines.size() && src_lines[i].compare(dst_lines[j+k]) == 0) //A(n) == B(n+1)
-				{
-					CompareResultInterface *result = new AddedLine(i, j, j+k, dst_lines[j]);
-					for(unsigned int n = 1; n < k; n++)
-						result->add_line(dst_lines[j+n]);
-					results_queue.push_back(result);
-					i++; j = j+k+1;
-					break;
-				}
-			if(results_queue.size() > prev_size) continue;
-
-			for(unsigned int k = 1; k < DEPTH; k++)
-				if(i+k < src_lines.size() && j+k < dst_lines.size() && src_lines[i+k].compare(dst_lines[j+k]) == 0) //A(n+1) == B(n+1)
-				{
-					CompareResultInterface *result = new ModifiedLine(i, j, src_lines[i], dst_lines[j]);
-					for(unsigned int n = 1; n < k; n++)
-						result->add_line(src_lines[i+n], dst_lines[j+n]);
-					results_queue.push_back(result);
-					i++; j++;
-					break;
-				}
-			if(results_queue.size() > prev_size) continue;
-
-			i++; j++;
+			compare_result->add_line(string(), *itr2);
+			itr2++;
 		}
 	}
-	if(j < dst_lines.size())
-	{
-		unsigned int rem = dst_lines.size() - j;
-		CompareResultInterface *result = new AddedLine(i-1, j, j+rem, dst_lines[j]);
-		for(unsigned int n = j+1; n < dst_lines.size(); n++)
-			result->add_line(dst_lines[n]);
-		results_queue.push_back(result);
-	}
-	if(i < src_lines.size())
-	{
-		unsigned int rem = src_lines.size() - i;
-		CompareResultInterface *result = new DeletedLine(i, i+rem, j-1, src_lines[i]);
-		for(unsigned int n = i+1; n < src_lines.size(); n++)
-			result->add_line(src_lines[n]);
-		results_queue.push_back(result);
-	}
+
+	diff_result.push_back(compare_result);
 
 
+	return diff_result;
 }
-

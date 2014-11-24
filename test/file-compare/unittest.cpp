@@ -5,8 +5,9 @@
  *      Author: satram
  */
 
+#include "common.h"
 #include "CompareFile.h"
-
+#include "CompareResultInterface.h"
 
 std::string get_file_contents(const char *filename)
 {
@@ -34,7 +35,21 @@ int main(int argc, char *argv[])
 	}
 	fc.set_first(argv[1]);
 	fc.set_second(argv[2]);
-	std::cout << fc.get_result() << std::endl;
+	try
+	{
+		deque<CompareResultInterface*> compare_result = fc.get_result();
+		if( compare_result.size() == 0 )
+			cout << "Both files are indentical" << endl;
+		else
+		{
+			for(auto pResult : compare_result)
+				cout << pResult->marshall();
+		}
+	}
+	catch(string str_exc)
+	{
+		cout << "[ERROR] " << str_exc << endl;
+	}
 
 	std::ostringstream oss;
 	oss << "diff " << argv[1] << " "<< argv[2] << " > difftmp.txt";

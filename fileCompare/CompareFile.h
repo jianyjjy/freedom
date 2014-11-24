@@ -1,39 +1,28 @@
-/*
- * CompareFile.h
- *
- *  Created on: Nov 10, 2014
- *      Author: satram
- */
+//CompareFile.h
+
+#ifndef COMPARE_FILE_H
+#define COMPARE_FILE_H
+
+#include <string>
+#include <deque>
+using namespace std;
 
 
-#include "fc_common.h"
-
-#ifndef COMPAREFILE_H_
-#define COMPAREFILE_H_
-
-#define MAX_LINE_SIZE	(1024)
+class CompareResultInterface;
 
 class CompareFile
 {
-	std::ifstream in1;
-	std::ifstream in2;
-	std::deque<CompareResultInterface *> results_queue;
-	void compare();
+	string first_file;
+	string second_file;
 
-	//file entries
-	std::deque<std::string> src_lines;
-	std::deque<std::string> dst_lines;
+public :
+	CompareFile() 	{ first_file = "";	second_file = ""; }
+	~CompareFile()	{ }
 
-	void readlines(
-			std::ifstream &in,
-			std::deque<std::string> &lines);
+	void set_first(string filename)		{ first_file = filename; }
+	void set_second(string filename)	{ second_file = filename; }
 
-public:
-	CompareFile();
-	virtual ~CompareFile();
-	void set_first(const char *filename);
-	void set_second(const char *filename);
-	std::string get_result();
+	deque<CompareResultInterface*> get_result(void);
 };
 
-#endif /* COMPAREFILE_H_ */
+#endif	//COMPARE_FILE_H
