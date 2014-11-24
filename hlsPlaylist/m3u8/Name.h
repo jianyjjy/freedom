@@ -35,7 +35,7 @@ class Name : public NameBase
 
 public:
 	Name(T name): id(name){};
-    ~Name() {};
+    virtual ~Name() {};
 
 	std::string asString()
 	{

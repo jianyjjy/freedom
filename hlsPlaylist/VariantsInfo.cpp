@@ -22,11 +22,11 @@ VariantsInfo::VariantsInfo(Section *section, std::string master_path)
 
 	for(unsigned int i = 0; i < section->tags.size(); i++)
 	{
-		if(media_tag == section->tags[i].get_name())
+		if(media_tag == section->tags[i]->get_name())
 		{
-			for(unsigned int j = 0; j < section->tags[i].properties.size(); j++)
+			for(unsigned int j = 0; j < section->tags[i]->properties.size(); j++)
 			{
-				Property *ppty = section->tags[i].properties[j];
+				Property *ppty = section->tags[i]->properties[j];
 				std::string name = ppty->get_name()->asString();
 				if(name.compare("TYPE") == 0)
 					type = ppty->get_value()->asString();
@@ -56,11 +56,11 @@ VariantsInfo::VariantsInfo(Section *section, std::string master_path)
 					characteristics = ppty->get_value()->asString();
 			}
 		}
-		else if(stream_tag == section->tags[i].get_name())
+		else if(stream_tag == section->tags[i]->get_name())
 		{
-			for(unsigned int j = 0; j < section->tags[i].properties.size(); j++)
+			for(unsigned int j = 0; j < section->tags[i]->properties.size(); j++)
 			{
-				Property *ppty = section->tags[i].properties[j];
+				Property *ppty = section->tags[i]->properties[j];
 				std::string name = ppty->get_name()->asString();
 				if(name.compare("BANDWIDTH") == 0)
 					media_bandwidth = ppty->get_value()->asLongLong();
@@ -92,11 +92,11 @@ VariantsInfo::VariantsInfo(Section *section, std::string master_path)
 			if(media_URI.find("/") == std::string::npos)
 				media_URI = master_path + media_URI;
 		}
-		else if(iframe_tag == section->tags[i].get_name())
+		else if(iframe_tag == section->tags[i]->get_name())
 		{
-			for(unsigned int j = 0; j < section->tags[i].properties.size(); j++)
+			for(unsigned int j = 0; j < section->tags[i]->properties.size(); j++)
 			{
-				Property *ppty = section->tags[i].properties[j];
+				Property *ppty = section->tags[i]->properties[j];
 				std::string name = ppty->get_name()->asString();
 				if(name.compare("BANDWIDTH") == 0)
 					iframe_bandwidth = ppty->get_value()->asLongLong();

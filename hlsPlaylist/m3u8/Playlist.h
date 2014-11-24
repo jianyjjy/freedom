@@ -12,15 +12,19 @@
 
 
 class Playlist {
-	std::list<Section> section_list;
+	std::deque<Section *> section_list;
 	std::ostringstream oss;
 	std::deque<std::string> names;
 
 public:
 	Playlist(){};
-	virtual ~Playlist(){};
+	virtual ~Playlist()
+	{
+		for(unsigned int i = 0; i < section_list.size(); i++)
+			delete(section_list[i]);
+	};
 
-	void add_section(Section &s)
+	void add_section(Section *s)
 	{
 		section_list.push_back(s);
 	}
@@ -29,15 +33,15 @@ public:
 	{
 		oss.str("");
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
-			oss << it->marshall();
+			oss << (*it)->marshall();
 		return oss.str();
 
 	}
-	Section & get_section(std::string name)
+	Section* get_section(std::string name)
 	{
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
 		{
-			if(it->get_name() == name)
+			if((*it)->get_name() == name)
 				return (*it);
 		}
 		throw std::runtime_error("requested section not found");
@@ -47,18 +51,22 @@ public:
 	{
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
 		{
-			if(it->get_name() == name){
+			if((*it)->get_name() == name)
+			{
+				delete(*it);
 				section_list.erase(it);
 				break;
 			}
 		}
 	}
 
-	void modify_section(Section &s)
+	void modify_section(Section *s)
 	{
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
 		{
-			if(it->get_name() == s.get_name()){
+			if((*it)->get_name() == s->get_name())
+			{
+				delete(*it);
 				it = section_list.erase(it);
 				section_list.insert(it, s);
 				break;
@@ -75,7 +83,7 @@ public:
 	{
 		names.clear();
 		for(auto it = section_list.begin(), ite = section_list.end(); it != ite; it++)
-			names.push_back(it->get_name());
+			names.push_back((*it)->get_name());
 		return names;
 	}
 };

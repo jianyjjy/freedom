@@ -44,7 +44,7 @@ protected:
 	RENDITION_GROUP_E group;
 	unsigned int sessionId;
 
-	void add_property(Tag &t, std::string & str)
+	void add_property(Tag *t, std::string & str)
 	{
 		PRINT(std::cout << "add_property: str: " << str << std::endl);
 		size_t value_offset = str.find("=");
@@ -56,11 +56,11 @@ protected:
 			PRINT(std::cout << "add_property: name: " << name << std::endl);
 			std::string value = str.substr(value_offset+1, str.size());
 			PRINT(std::cout << "add_property: value: " << value << std::endl);
-			t.add_property(name, value);
+			t->add_property(name, value);
 		}
 		else
 		{
-			t.add_property(str);
+			t->add_property(str);
 		}
 	}
 
@@ -102,7 +102,7 @@ protected:
     }
 
 
-    void parse_property(Tag & t, std::string & str)
+    void parse_property(Tag * t, std::string & str)
     {
     	size_t attrib_offset = std::string::npos;
     	if(str.find(",") != std::string::npos)
@@ -122,7 +122,7 @@ protected:
 	}
 
 
-	Tag get_tag(std::string& str)
+	Tag* get_tag(std::string& str)
 	{
 		size_t tag_offset = str.find(":");
 		if(tag_offset != std::string::npos)
@@ -131,14 +131,14 @@ protected:
 			PRINT(std::cout << "get_tag: name: " << name << std::endl);
 			std::string attributes = str.substr(tag_offset+1, str.size()- tag_offset);
 			PRINT(std::cout << "get_tag: attributes: " << attributes << std::endl);
-			Tag new_tag(name);
+			Tag* new_tag = new Tag(name);
 			parse_property(new_tag, attributes);
 			return new_tag;
 		}
 		else
 		{
 			PRINT(std::cout << "get_tag: str: " << str << std::endl);
-			Tag new_tag(str);
+			Tag* new_tag = new Tag(str);
 			return new_tag;
 		}
 	}
@@ -168,11 +168,11 @@ public:
 	virtual void add_header(std::deque<std::string> & strqueue)
 	{
 		//PRINT(std::cout << "add_header\n");
-		Section header("header");
+		Section* header = new Section("header");
 		for(unsigned int i = 0; i < strqueue.size(); i++)
 		{
-			Tag instance = get_tag(strqueue[i]);
-			header.add_tag(instance);
+			Tag* instance = get_tag(strqueue[i]);
+			header->add_tag(instance);
 		}
 		playlist.add_section(header);
 		PRINT(std::cout << "Header-----------------------------------------\n");
@@ -183,7 +183,7 @@ public:
 		//PRINT(std::cout << "add_section\n");
 		std::ostringstream oss;
 		oss << "node-" << node_count++;
-		Section node(oss.str());
+		Section* node = new Section(oss.str());
 		for(unsigned int i = 0; i < strqueue.size(); i++)
 		{
 			//PRINT(std::cout << strqueue[i] << std::endl);
@@ -196,19 +196,19 @@ public:
 					std::string name = strqueue[i].substr(path_offset+1, strqueue[i].size());
 					PRINT(std::cout << "set path: " << path << std::endl);
 					PRINT(std::cout << "set locator: " << name << std::endl);
-					node.set_path(path);
-					node.set_locator(name);
+					node->set_path(path);
+					node->set_locator(name);
 				}
 				else
 				{
 					PRINT(std::cout << "set locator: " << strqueue[i] << std::endl);
-					node.set_locator(strqueue[i]);
+					node->set_locator(strqueue[i]);
 				}
 			}
 			else
 			{
-				Tag instance = get_tag(strqueue[i]);
-				node.add_tag(instance);
+				Tag* instance = get_tag(strqueue[i]);
+				node->add_tag(instance);
 			}
 		}
 		//PRINT(std::cout << "created a section\n");
@@ -219,11 +219,11 @@ public:
 	virtual void add_footer(std::deque<std::string> & strqueue)
 	{
 		//PRINT(std::cout << "add_footer\n");
-		Section footer("footer");
+		Section* footer = new Section("footer");
 		for(unsigned int i = 0; i < strqueue.size(); i++)
 		{
-			Tag instance = get_tag(strqueue[i]);
-			footer.add_tag(instance);
+			Tag* instance = get_tag(strqueue[i]);
+			footer->add_tag(instance);
 		}
 		playlist.add_section(footer);
 		PRINT(std::cout << "Footer-----------------------------------------\n");

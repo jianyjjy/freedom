@@ -24,8 +24,8 @@ public:
 	};
 	~Property()
 	{
-		delete name;
-		delete value;
+		if(name) delete name;
+		if(value) delete value;
 	};
 	NameBase* get_name()
 	{
