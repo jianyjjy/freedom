@@ -12,6 +12,7 @@ add_subdirectory(fileCompare)
 add_subdirectory(hlsPlaylist)
 add_subdirectory(playlistFactory)
 add_subdirectory(playlistManager)
+add_subdirectory(UrlMonitor)
 
 add_subdirectory(test/file-compare)
 add_subdirectory(test/playlistParser)
