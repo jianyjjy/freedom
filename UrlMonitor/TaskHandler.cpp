@@ -54,5 +54,5 @@ void TaskHandler::add_task(Task *t)
 {
 	std::unique_lock<std::mutex> lk(m);
 	tasks_to_execute.push_back(t);
-	wakeup();
+	cv.notify_one();
 }

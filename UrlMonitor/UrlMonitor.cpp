@@ -9,9 +9,9 @@
 #include "MonitorMgr.h"
 #include "UrlMonitor.h"
 
-UrlMonitor::UrlMonitor(char * uri_name, unsigned poll_interval, MonitorMgr *mgr)
+UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr *mgr)
 {
-	URI = std::string(uri_name);
+	URI = uri_name;
 	size_t path_offset = URI.find_last_of("/");
 	if(path_offset != std::string::npos)
 	{
@@ -33,10 +33,10 @@ void UrlMonitor::execute()
 	//schedule next-task
 	schedule_task();
 
-    auto now = std::chrono::system_clock::now();
-    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    //auto now = std::chrono::system_clock::now();
+    //auto in_time_t = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
-    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+   //ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
     ss << " checking " << URI << std::endl;
     std::cout << ss.str();
 

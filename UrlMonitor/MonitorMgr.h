@@ -45,7 +45,7 @@ public:
 		return instance;
 	}
 	void register_free_task_handler(TaskHandler *th);
-	void create_url_monitor(char *playlist_name, unsigned int poll_interval);
+	void create_url_monitor(std::string playlist_name, unsigned int poll_interval);
 	void remove_all_url_monitor();
 	void remove_url_monitor(char * playlist_name);
 	void add_task(Task *tk);
