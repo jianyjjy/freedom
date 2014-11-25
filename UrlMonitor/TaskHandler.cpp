@@ -6,9 +6,9 @@
  */
 
 #include "monitor_common.h"
+#include "MonitorMgr.h"
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
-#include "MonitorMgr.h"
 
 TaskHandler::TaskHandler(MonitorMgr *mgr)
 {

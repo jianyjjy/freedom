@@ -20,6 +20,7 @@
 #include <map>
 #include <list>
 #include <set>
+#include <queue>
 
 #include <algorithm>
 #include <thread>

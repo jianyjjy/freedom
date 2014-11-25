@@ -5,8 +5,9 @@
  *      Author: satram
  */
 #include "monitor_common.h"
-#include "TaskHandler.h"
 #include "MonitorMgr.h"
+#include "UrlMonitor.h"
+#include "TaskHandler.h"
 
 #define THREAD_POOL_DEPTH (10)
 
@@ -17,16 +18,24 @@ MonitorMgr::MonitorMgr()
 {
 	thread_pool_size = THREAD_POOL_DEPTH;
 	task_handlers.clear();
+	destroy = false;
+	timer = new std::thread(&MonitorMgr::timer_thread, this);
+	urlMonitor.clear();
 }
 
 
 MonitorMgr::~MonitorMgr()
 {
     destroy_task_handlers();
+    destroy = true;
+    timer->join();
+    remove_all_url_monitor();
 }
 
 
-//thread pool stuff
+/*
+ * thread pool
+ */
 
 void MonitorMgr::create_task_handler()
 {
@@ -64,4 +73,69 @@ void MonitorMgr::register_free_task_handler(TaskHandler *th)
 }
 
 
-//timer
+/*
+ * Timer
+ */
+
+void MonitorMgr::timer_thread()
+{
+	while(!destroy)
+	{
+		//wake up
+		Task *tk = scheduld_tasks.top();
+		scheduld_tasks.pop();
+		tk->execute();
+	}
+	return;
+}
+
+
+
+
+/*
+ * Url Monitor
+ */
+void MonitorMgr::create_url_monitor(char *playlist_name, unsigned int poll_interval)
+{
+	UrlMonitor *task = new UrlMonitor(playlist_name, poll_interval, this);
+	urlMonitor.push_back(task);
+}
+
+void MonitorMgr::remove_all_url_monitor()
+{
+	for(unsigned int i = 0; i < urlMonitor.size(); i++)
+		delete(urlMonitor[i]);
+	urlMonitor.clear();
+}
+
+void MonitorMgr::remove_url_monitor(char * playlist_name)
+{
+	bool found = false;
+	for(auto it = urlMonitor.begin(), ite = urlMonitor.end(); it != ite; it++)
+	{
+		if((*it)->get_name().compare(playlist_name) == 0)
+		{
+			found = true;
+			delete(*it);
+			it = urlMonitor.erase(it);
+			break;
+		}
+	}
+	if(!found)
+	{
+		std::ostringstream oss;
+		oss << "unable to find url monitor for playlist " << playlist_name;
+		throw std::runtime_error(oss.str());
+	}
+}
+
+/*
+ * Task related
+ */
+
+void MonitorMgr::add_task(Task *tk)
+{
+	std::unique_lock<std::mutex> lk(m);
+	scheduld_tasks.push(tk);
+	cv.notify_one();
+}

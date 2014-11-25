@@ -5,9 +5,11 @@
  *      Author: satram
  */
 #include "common.h"
+#include "TaskHandler.h"
+#include "MonitorMgr.h"
 #include "UrlMonitor.h"
 
-UrlMonitor::UrlMonitor(char * uri_name)
+UrlMonitor::UrlMonitor(char * uri_name, unsigned poll_interval, MonitorMgr *mgr)
 {
 	URI = std::string(uri_name);
 	size_t path_offset = URI.find_last_of("/");
@@ -16,7 +18,9 @@ UrlMonitor::UrlMonitor(char * uri_name)
 		path = URI.substr(0, path_offset+1);
 		name = URI.substr(path_offset+1, URI.size());
 	}
-	polling_interval = 3;
+	polling_interval = poll_interval;
+	task_scheduler = mgr;
+	schedule_task();
 }
 
 UrlMonitor::~UrlMonitor()
@@ -24,8 +28,11 @@ UrlMonitor::~UrlMonitor()
 
 }
 
-void execute()
+void UrlMonitor::execute()
 {
+	//schedule next-task
+	schedule_task();
+
 	//download the playlist
 
 	//filecompare size

@@ -20,8 +20,8 @@ class MonitorMgr
 
 	unsigned int thread_pool_size;
 
-	//std::priority_queue<UrlMonitor *, std::deque<UrlMonitor *>, > timer;
-
+	std::priority_queue<Task *> scheduld_tasks;
+	std::deque<Task *> urlMonitor;
 
 	MonitorMgr();
 	virtual ~MonitorMgr();
@@ -29,6 +29,12 @@ class MonitorMgr
 	void create_task_handler();
 	TaskHandler * get_task_handler();
     void destroy_task_handlers();
+
+    void timer_thread();
+    std::thread *timer;
+    bool destroy;
+    std::mutex m;
+    std::condition_variable cv;
 
 public:
 
@@ -39,7 +45,10 @@ public:
 		return instance;
 	}
 	void register_free_task_handler(TaskHandler *th);
-
+	void create_url_monitor(char *playlist_name, unsigned int poll_interval);
+	void remove_all_url_monitor();
+	void remove_url_monitor(char * playlist_name);
+	void add_task(Task *tk);
 };
 
 #endif /* MONITORMGR_H_ */
