@@ -10,8 +10,9 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
-TaskHandler::TaskHandler(MonitorMgr *mgr)
+TaskHandler::TaskHandler(MonitorMgr *mgr, unsigned int count)
 {
+	id = count;
 	thread_pool_mgr = mgr;
 	tid = new std::thread(&TaskHandler::execute_task, this);
 	destroy = false;
@@ -39,7 +40,7 @@ void TaskHandler::execute_task()
 		}
 		Task *t = tasks_to_execute.back();
 		tasks_to_execute.pop_back();
-		t->execute();
+		t->execute(this);
 	}
 	return;
 }

@@ -12,6 +12,7 @@
 
 class TaskHandler
 {
+	unsigned int id;
 	std::mutex m;
 	std::condition_variable cv;
 	std::thread* tid;
@@ -23,9 +24,13 @@ class TaskHandler
 	void execute_task();
 
 public:
-	TaskHandler(MonitorMgr *mgr);
+	TaskHandler(MonitorMgr *mgr, unsigned int count);
 	virtual ~TaskHandler();
 	void add_task(Task *t);
+	unsigned int get_id()
+	{
+		return id;
+	}
 };
 
 #endif /* TASKHANDLER_H_ */

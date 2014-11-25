@@ -17,12 +17,9 @@ public:
 	virtual ~Task(){};
 	bool operator()(Task *lhs, Task *rhs)
 	{
-		if(lhs->get_absolute_time() < rhs->get_absolute_time())
-			return true;
-		else
-			return false;
+		return(lhs->get_absolute_time() < rhs->get_absolute_time());
 	}
-	virtual void execute() = 0;
+	virtual void execute(TaskHandler *th) = 0;
 	virtual std::chrono::time_point<std::chrono::system_clock> get_absolute_time() = 0;
 	virtual void schedule_task() = 0;
 	virtual std::string get_name() = 0;
@@ -43,7 +40,7 @@ class UrlMonitor : public Task
 public:
 	UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr *mgr);
 	virtual ~UrlMonitor();
-	void execute();
+	void execute(TaskHandler *th);
 
 	std::chrono::time_point<std::chrono::system_clock> get_absolute_time()
 	{

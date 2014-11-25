@@ -19,7 +19,7 @@ class MonitorMgr
 	std::deque<TaskHandler *> available_taskhandlers;
 
 	unsigned int thread_pool_size;
-
+	unsigned int task_handler_count;
 	std::priority_queue<Task *> scheduld_tasks;
 	std::deque<Task *> urlMonitor;
 

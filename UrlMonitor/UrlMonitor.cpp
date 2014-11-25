@@ -28,7 +28,7 @@ UrlMonitor::~UrlMonitor()
 
 }
 
-void UrlMonitor::execute()
+void UrlMonitor::execute(TaskHandler *th)
 {
 	//schedule next-task
 	schedule_task();
@@ -37,7 +37,7 @@ void UrlMonitor::execute()
     //auto in_time_t = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
    //ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-    ss << " checking " << URI << std::endl;
+    ss << "Th#" << th->get_id() << " checking " << URI << std::endl;
     std::cout << ss.str();
 
 	//download the playlist
