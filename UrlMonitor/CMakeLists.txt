@@ -3,6 +3,7 @@ project (urlMonitor)
 
 set (SRC UrlMonitor.cpp)
 LIST(APPEND SRC MonitorMgr.cpp)
+LIST(APPEND SRC TaskHandler.cpp)
 
 include_directories(. ../include)
 
