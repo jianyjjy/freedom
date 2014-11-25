@@ -4,6 +4,6 @@ project (urlMonitor)
 set (SRC UrlMonitor.cpp)
 LIST(APPEND SRC MonitorMgr.cpp)
 
-include_directories(.)
+include_directories(. ../include)
 
 add_library(urlMonitor SHARED ${SRC})

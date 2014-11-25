@@ -9,8 +9,15 @@
 #define URLMONITOR_H_
 
 class UrlMonitor {
+
+	std::string URI;
+	std::string path;
+	std::string name;
+
+	unsigned int polling_interval;
+
 public:
-	UrlMonitor();
+	UrlMonitor(char * uri_name);
 	virtual ~UrlMonitor();
 };
 
