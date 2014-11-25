@@ -85,33 +85,36 @@ void MonitorMgr::timer_thread()
 	while(!destroy)
 	{
 		std::unique_lock<std::mutex> lk(m);
-		if(scheduld_tasks.size() == 0)
+		if(scheduled_tasks.size() == 0)
 		{
+			std::cout << "timer sleep\n";
 			//std::cout << "timer thread sleeping - there aren't any tasks in scheduler priority queue\n";
 			cv.wait(lk);
 		}
 		//std::cout << "timer thread, take the task with nearest time point\n";
-		Task *tk = scheduld_tasks.top();
-		std::cout << "sleep for " << tk->get_name() << "\t";
+		Task *tk = scheduled_tasks.top();
+		std::cout << "timer for " << tk->get_name() << "\n";
 		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
 		if(now > tk->get_absolute_time())
 		{
-			std::cout << "execute - already expired\n";
+			//std::cout << "execute - already expired\n";
 			//std::cout << "execute task whose time-to-execute has already crossed\n";
-			scheduld_tasks.pop();
+			scheduled_tasks.pop();
 			TaskHandler *th = get_task_handler();
+			std::cout << "Th#" << th->get_id() << " execute1 task for " << tk->get_name() << std::endl;
 			th->add_task(tk);
 		}
-		else if(cv.wait_until(lk, tk->get_absolute_time()) == std::cv_status::timeout)
+		if(cv.wait_until(lk, tk->get_absolute_time()) == std::cv_status::timeout)
 		{
-			std::cout << "execute - just expired\n";
+			//std::cout << "execute - just expired\n";
 			//std::cout << "execution of tasks in thread pool\n";
-			scheduld_tasks.pop();
+			scheduled_tasks.pop();
 			TaskHandler *th = get_task_handler();
+			std::cout << "Th#" << th->get_id() << " execute2 task for " << tk->get_name() << std::endl;
 			th->add_task(tk);
 		}
-		else
-			std::cout << " disturbed\n";
+		//else
+			//std::cout << " disturbed\n";
 	}
 	return;
 }
@@ -124,13 +127,15 @@ void MonitorMgr::timer_thread()
  */
 void MonitorMgr::create_url_monitor(std::string playlist_name, unsigned int poll_interval)
 {
-	std::cout << "creating url monitor for " << playlist_name << " with polling interval " << poll_interval << " seconds \n";
+	std::unique_lock<std::mutex> lk(m);
+	std::cout << "create urlmonitor " << playlist_name << "(poll " << poll_interval << "s)\n";
 	UrlMonitor *task = new UrlMonitor(playlist_name, poll_interval, this);
 	urlMonitor.push_back(task);
 }
 
 void MonitorMgr::remove_all_url_monitor()
 {
+	std::unique_lock<std::mutex> lk(m);
 	for(unsigned int i = 0; i < urlMonitor.size(); i++)
 		delete(urlMonitor[i]);
 	urlMonitor.clear();
@@ -138,6 +143,7 @@ void MonitorMgr::remove_all_url_monitor()
 
 void MonitorMgr::remove_url_monitor(char * playlist_name)
 {
+	std::unique_lock<std::mutex> lk(m);
 	bool found = false;
 	for(auto it = urlMonitor.begin(), ite = urlMonitor.end(); it != ite; it++)
 	{
@@ -163,10 +169,10 @@ void MonitorMgr::remove_url_monitor(char * playlist_name)
 
 void MonitorMgr::add_task(Task *tk)
 {
-	std::unique_lock<std::mutex> lk(m);
-	//std::cout << "MonitorMgr adding task to pqueue" << std::endl;
-	scheduld_tasks.push(tk);
-	//Task *t = scheduld_tasks.top();
+	//std::unique_lock<std::mutex> lk(m);
+	std::cout << "add task " << tk->get_name() << std::endl;
+	scheduled_tasks.push(tk);
+	//Task *t = scheduled_tasks.top();
 	//std::cout << "top of pqueue " << t->get_name() << std::endl;
 	cv.notify_one();
 }

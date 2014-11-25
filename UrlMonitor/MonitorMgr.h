@@ -8,6 +8,23 @@
 #ifndef MONITORMGR_H_
 #define MONITORMGR_H_
 
+#include "Task.h"
+
+class mycomparison
+{
+  bool reverse;
+public:
+  mycomparison(const bool& revparam=true)
+    {reverse=revparam;}
+  bool operator() (Task *lhs, Task *rhs) const
+  {
+    if (reverse) return (lhs->get_absolute_time()>rhs->get_absolute_time());
+    else return (lhs->get_absolute_time() < rhs->get_absolute_time());
+  }
+};
+
+typedef std::priority_queue<Task*, std::deque<Task *>, mycomparison> mypq_type;
+
 class MonitorMgr
 {
 
@@ -20,7 +37,8 @@ class MonitorMgr
 
 	unsigned int thread_pool_size;
 	unsigned int task_handler_count;
-	std::priority_queue<Task *> scheduld_tasks;
+	mypq_type scheduled_tasks;
+	//std::priority_queue<Task*, std::deque<Task *>> scheduled_tasks;
 	std::deque<Task *> urlMonitor;
 
 	MonitorMgr();
