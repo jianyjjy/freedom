@@ -81,10 +81,29 @@ void MonitorMgr::timer_thread()
 {
 	while(!destroy)
 	{
-		//wake up
+		std::unique_lock<std::mutex> lk(m);
+		if(scheduld_tasks.size() == 0)
+		{
+			//there aren't any tasks in scheduler priority queue
+			cv.wait(lk);
+		}
+		//take the task with nearest time point
 		Task *tk = scheduld_tasks.top();
 		scheduld_tasks.pop();
-		tk->execute();
+
+		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+		if(now > tk->get_absolute_time())
+		{
+			//execute task whose time-to-execute has already crossed
+			TaskHandler *th = get_task_handler();
+			th->add_task(tk);
+		}
+		else if(cv.wait_until(lk, tk->get_absolute_time()) == std::cv_status::timeout)
+		{
+			//execution of tasks in thread pool
+			TaskHandler *th = get_task_handler();
+			th->add_task(tk);
+		}
 	}
 	return;
 }
