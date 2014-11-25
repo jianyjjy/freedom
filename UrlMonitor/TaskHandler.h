@@ -15,6 +15,7 @@ class TaskHandler
 	std::mutex m;
 	std::condition_variable cv;
 	std::thread* tid;
+	MonitorMgr *thread_pool_mgr;
 
 	std::deque<Task *> tasks_to_execute;
 	bool destroy;
@@ -22,7 +23,7 @@ class TaskHandler
 	void execute_task();
 
 public:
-	TaskHandler();
+	TaskHandler(MonitorMgr *mgr);
 	virtual ~TaskHandler();
 	void add_task(Task *t);
 };

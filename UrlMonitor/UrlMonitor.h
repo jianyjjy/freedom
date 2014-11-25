@@ -8,7 +8,19 @@
 #ifndef URLMONITOR_H_
 #define URLMONITOR_H_
 
-class UrlMonitor {
+#include "monitor_common.h"
+
+class Task {
+public:
+	Task(){};
+	virtual ~Task(){};
+	virtual void execute() = 0;
+};
+
+
+
+class UrlMonitor : public Task
+{
 
 	std::string URI;
 	std::string path;
@@ -19,6 +31,7 @@ class UrlMonitor {
 public:
 	UrlMonitor(char * uri_name);
 	virtual ~UrlMonitor();
+	void execute();
 };
 
 #endif /* URLMONITOR_H_ */

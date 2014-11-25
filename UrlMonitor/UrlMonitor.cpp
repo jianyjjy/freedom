@@ -23,3 +23,14 @@ UrlMonitor::~UrlMonitor()
 {
 
 }
+
+void execute()
+{
+	//download the playlist
+
+	//filecompare size
+
+	//if delta, call file compare module
+
+	//get CompareResultInterface * and give it to corresponding playlist
+}

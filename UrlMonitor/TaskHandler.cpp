@@ -5,11 +5,14 @@
  *      Author: satram
  */
 
-
+#include "monitor_common.h"
+#include "UrlMonitor.h"
 #include "TaskHandler.h"
+#include "MonitorMgr.h"
 
-TaskHandler::TaskHandler()
+TaskHandler::TaskHandler(MonitorMgr *mgr)
 {
+	thread_pool_mgr = mgr;
 	tid = new std::thread(&TaskHandler::execute_task, this);
 	destroy = false;
 }
@@ -30,13 +33,13 @@ void TaskHandler::execute_task()
 		std::unique_lock<std::mutex> lk(m);
 		if(tasks_to_execute.size() == 0)
 		{
-			//register i am free message to thread pool mgr
+			thread_pool_mgr->register_free_task_handler(this);
 			cv.wait(lk);
 			continue;
 		}
 		Task *t = tasks_to_execute.back();
 		tasks_to_execute.pop_back();
-		//t->execute();
+		t->execute();
 	}
 	return;
 }
