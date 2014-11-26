@@ -10,8 +10,9 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
-TaskHandler::TaskHandler(MonitorMgr *mgr)
+TaskHandler::TaskHandler(MonitorMgr *mgr, unsigned int count)
 {
+	id = count;
 	thread_pool_mgr = mgr;
 	tid = new std::thread(&TaskHandler::execute_task, this);
 	destroy = false;
@@ -19,6 +20,7 @@ TaskHandler::TaskHandler(MonitorMgr *mgr)
 
 TaskHandler::~TaskHandler()
 {
+	std::cout << "dtor TaskHandler " << id << std::endl;
 	destroy = true;
 	wakeup();
 	tid->join();
@@ -39,7 +41,7 @@ void TaskHandler::execute_task()
 		}
 		Task *t = tasks_to_execute.back();
 		tasks_to_execute.pop_back();
-		t->execute();
+		t->execute(this);
 	}
 	return;
 }
@@ -54,5 +56,5 @@ void TaskHandler::add_task(Task *t)
 {
 	std::unique_lock<std::mutex> lk(m);
 	tasks_to_execute.push_back(t);
-	wakeup();
+	cv.notify_one();
 }
