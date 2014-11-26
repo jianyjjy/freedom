@@ -20,6 +20,7 @@ TaskHandler::TaskHandler(MonitorMgr *mgr, unsigned int count)
 
 TaskHandler::~TaskHandler()
 {
+	std::cout << "dtor TaskHandler " << id << std::endl;
 	destroy = true;
 	wakeup();
 	tid->join();

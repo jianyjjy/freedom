@@ -17,6 +17,7 @@
 
 
 MonitorMgr *MonitorMgr::instance = NULL;
+unsigned int MonitorMgr::ref_count = 0;
 
 MonitorMgr::MonitorMgr()
 {
@@ -31,9 +32,12 @@ MonitorMgr::MonitorMgr()
 
 MonitorMgr::~MonitorMgr()
 {
-    destroy_task_handlers();
+	std::cout << "dtor Monitor mgr\n";
     destroy = true;
+	clear_scheduled_tasks();
     timer->join();
+    delete(timer);
+    destroy_task_handlers();
     remove_all_url_monitor();
 }
 
@@ -103,6 +107,7 @@ void MonitorMgr::timer_thread()
 			PRINT(std::cout << "timer sleep\n");
 			//std::cout << "timer thread sleeping - there aren't any tasks in scheduler priority queue\n";
 			cv.wait(lk);
+			continue;
 		}
 		//std::cout << "timer thread, take the task with nearest time point\n";
 		Task *tk = scheduled_tasks.top();
@@ -170,8 +175,18 @@ void MonitorMgr::remove_url_monitor(char * playlist_name)
 
 void MonitorMgr::add_task(Task *tk)
 {
-	//std::unique_lock<std::mutex> lk(m);
-	PRINT(std::cout << "add task " << tk->get_name() << std::endl);
-	scheduled_tasks.push(tk);
+	if(!destroy)
+	{
+		PRINT(std::cout << "add task " << tk->get_name() << std::endl);
+		scheduled_tasks.push(tk);
+		cv.notify_one();
+	}
+}
+
+void MonitorMgr::clear_scheduled_tasks()
+{
+	while(scheduled_tasks.size() > 0)
+		scheduled_tasks.pop();
+	std::unique_lock<std::mutex> lk(m);
 	cv.notify_one();
 }

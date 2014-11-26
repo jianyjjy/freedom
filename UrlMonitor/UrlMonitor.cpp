@@ -27,13 +27,13 @@ UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr 
 
 UrlMonitor::~UrlMonitor()
 {
-
+	std::cout << "dtor UrlMonitor " << URI << std::endl;
 }
 
 void UrlMonitor::execute(TaskHandler *th)
 {
 	//schedule next-task
-	schedule_task();
+	schedule_future_task();
 
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 

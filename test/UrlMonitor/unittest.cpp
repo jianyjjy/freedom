@@ -17,9 +17,13 @@ int main()
 	mgr->create_url_monitor("media1.m3u8", 3);
 	mgr->create_url_monitor("media2.m3u8", 5);
 	mgr->create_url_monitor("media3.m3u8", 10);
-	while(true)
+
+	int count = 0;
+	while(count < 2)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(10));
+		count++;
 	}
+	mgr->delete_instance();
 	return 0;
 }

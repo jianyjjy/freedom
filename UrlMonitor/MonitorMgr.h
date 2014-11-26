@@ -29,6 +29,7 @@ class MonitorMgr
 {
 
 	static MonitorMgr *instance;
+	static unsigned int ref_count;
 
 	std::mutex tp_m;
 	std::condition_variable tp_cv;
@@ -55,14 +56,24 @@ class MonitorMgr
     std::condition_variable cv;
 
     const std::string currentDateTime();
+    void clear_scheduled_tasks();
 public:
 
 	static MonitorMgr* get_instance()
 	{
 		if(instance == NULL)
 			instance = new MonitorMgr();
+		ref_count++;
 		return instance;
 	}
+
+	void delete_instance()
+	{
+		ref_count--;
+		if(ref_count == 0)
+			delete(instance);
+	}
+
 	void register_free_task_handler(TaskHandler *th);
 	void create_url_monitor(std::string playlist_name, unsigned int poll_interval);
 	void remove_all_url_monitor();

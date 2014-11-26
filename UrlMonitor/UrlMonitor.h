@@ -36,12 +36,18 @@ public:
 	{
 		return URI;
 	}
-	void schedule_task()
+	void schedule_future_task()
 	{
 		next_time_slot = std::chrono::system_clock::now() + std::chrono::seconds(polling_interval);
-		//std::cout << "adding task to taskscheduler " << URI << std::endl;
 		task_scheduler->add_task(this);
 	}
+
+	void schedule_task()
+	{
+		next_time_slot = std::chrono::system_clock::now();
+		task_scheduler->add_task(this);
+	}
+
 };
 
 #endif /* URLMONITOR_H_ */
