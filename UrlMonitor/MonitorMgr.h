@@ -54,6 +54,7 @@ class MonitorMgr
     std::mutex m;
     std::condition_variable cv;
 
+    const std::string currentDateTime();
 public:
 
 	static MonitorMgr* get_instance()

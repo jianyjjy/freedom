@@ -9,6 +9,8 @@
 #include "MonitorMgr.h"
 #include "UrlMonitor.h"
 
+#define PRINT(X) //
+
 UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr *mgr)
 {
 	URI = uri_name;
@@ -33,14 +35,7 @@ void UrlMonitor::execute(TaskHandler *th)
 	//schedule next-task
 	schedule_task();
 
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    //auto now = std::chrono::system_clock::now();
-    //auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    //std::stringstream ss;
-    //ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-    //ss << "Th#" << th->get_id() << " checking " << URI << std::endl;
-    //std::cout << ss.str();
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	//download the playlist
 

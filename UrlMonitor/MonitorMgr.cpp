@@ -9,6 +9,10 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
+
+
+#define PRINT(X) //
+
 #define THREAD_POOL_DEPTH (10)
 
 
@@ -75,6 +79,15 @@ void MonitorMgr::register_free_task_handler(TaskHandler *th)
 	tp_cv.notify_one();
 }
 
+const std::string MonitorMgr::currentDateTime()
+{
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    return buf;
+}
 
 /*
  * Timer
@@ -87,34 +100,22 @@ void MonitorMgr::timer_thread()
 		std::unique_lock<std::mutex> lk(m);
 		if(scheduled_tasks.size() == 0)
 		{
-			std::cout << "timer sleep\n";
+			PRINT(std::cout << "timer sleep\n");
 			//std::cout << "timer thread sleeping - there aren't any tasks in scheduler priority queue\n";
 			cv.wait(lk);
 		}
 		//std::cout << "timer thread, take the task with nearest time point\n";
 		Task *tk = scheduled_tasks.top();
-		std::cout << "timer for " << tk->get_name() << "\n";
-		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-		if(now > tk->get_absolute_time())
-		{
-			//std::cout << "execute - already expired\n";
-			//std::cout << "execute task whose time-to-execute has already crossed\n";
-			scheduled_tasks.pop();
-			TaskHandler *th = get_task_handler();
-			std::cout << "Th#" << th->get_id() << " execute1 task for " << tk->get_name() << std::endl;
-			th->add_task(tk);
-		}
+		PRINT(std::cout << "timer for " << tk->get_name() << "\n");
 		if(cv.wait_until(lk, tk->get_absolute_time()) == std::cv_status::timeout)
 		{
 			//std::cout << "execute - just expired\n";
 			//std::cout << "execution of tasks in thread pool\n";
 			scheduled_tasks.pop();
 			TaskHandler *th = get_task_handler();
-			std::cout << "Th#" << th->get_id() << " execute2 task for " << tk->get_name() << std::endl;
+			std::cout << currentDateTime() << " Th#" << th->get_id() << " execute task for " << tk->get_name() << std::endl;
 			th->add_task(tk);
 		}
-		//else
-			//std::cout << " disturbed\n";
 	}
 	return;
 }
@@ -170,9 +171,7 @@ void MonitorMgr::remove_url_monitor(char * playlist_name)
 void MonitorMgr::add_task(Task *tk)
 {
 	//std::unique_lock<std::mutex> lk(m);
-	std::cout << "add task " << tk->get_name() << std::endl;
+	PRINT(std::cout << "add task " << tk->get_name() << std::endl);
 	scheduled_tasks.push(tk);
-	//Task *t = scheduled_tasks.top();
-	//std::cout << "top of pqueue " << t->get_name() << std::endl;
 	cv.notify_one();
 }
