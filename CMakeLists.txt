@@ -19,4 +19,5 @@ add_subdirectory(test/file-compare)
 add_subdirectory(test/playlistParser)
 add_subdirectory(test/playlistMgr)
 add_subdirectory(test/UrlMonitor)
+add_subdirectory(test/curlcpp)
 
