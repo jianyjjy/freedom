@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8)
 SET(CURL_MIN_VERSION "7.28.0")
 
 # Setting up project
