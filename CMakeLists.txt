@@ -13,10 +13,11 @@ add_subdirectory(hlsPlaylist)
 add_subdirectory(playlistFactory)
 add_subdirectory(playlistManager)
 add_subdirectory(UrlMonitor)
-add_subdirectory(httpGet)
+add_subdirectory(curlcpp)
 
 add_subdirectory(test/file-compare)
 add_subdirectory(test/playlistParser)
 add_subdirectory(test/playlistMgr)
 add_subdirectory(test/UrlMonitor)
-add_subdirectory(test/httpGetTool)
+add_subdirectory(test/curlcpp)
+
