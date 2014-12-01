@@ -9,7 +9,15 @@
 #define CURLCPPTEST_H_
 
 class CurlCppTest {
+
+	int https_post_login_form();
+	int web_socket_conn();
+
 public:
+
+	int simple_http_request(const char *url);
+	int http_get_file(const char *url, const char *filename);
+
 	CurlCppTest();
 	virtual ~CurlCppTest();
 };
