@@ -54,11 +54,12 @@ PlaylistFactory::~PlaylistFactory()
 }
 
 
-PlaylistInterface *PlaylistFactory::getDOM(char *str)
+PlaylistInterface *PlaylistFactory::getDOM(const char *url_path, const char *str)
 {
 	playlist = NULL;
 	state = BEGIN;
 	segment_start_key.clear();
+	path = std::string(url_path);
 	filename = std::string(str);
 	infile.open(filename);
 	lines.clear();
@@ -94,7 +95,7 @@ void PlaylistFactory::identify_playlist_type()
 			if(master_segment_tags.find(tag) != master_segment_tags.end())
 			{
 				std::cout << "create master DOM" << std::endl;
-				playlist = new MasterPlaylist(filename);
+				playlist = new MasterPlaylist(path, filename);
 				header = header_tags;
 				segment = master_segment_tags;
 				break;
@@ -102,7 +103,7 @@ void PlaylistFactory::identify_playlist_type()
 			else if(media_header_tags.find(tag) != media_header_tags.end())
 			{
 				std::cout << "create media DOM" << std::endl;
-				playlist = new MediaPlaylist(filename);
+				playlist = new MediaPlaylist(path, filename);
 				header = media_header_tags;
 				segment = media_segment_tags;
 				footer = footer_tags;
@@ -111,7 +112,7 @@ void PlaylistFactory::identify_playlist_type()
 			else if(iframe_header_tags.find(tag) != iframe_header_tags.end())
 			{
 				std::cout << "create iframe DOM" << std::endl;
-				playlist = new IFramePlaylist(filename);
+				playlist = new IFramePlaylist(path, filename);
 				header = iframe_header_tags;
 				segment = media_segment_tags;
 				footer = footer_tags;

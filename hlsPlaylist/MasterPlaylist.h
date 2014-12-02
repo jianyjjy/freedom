@@ -16,7 +16,7 @@ class MasterPlaylist : public PlaylistInterface
 	std::deque<VariantsInfo *> variants;
 
 public:
-	MasterPlaylist(std::string filename);
+	MasterPlaylist(std::string& url_path, std::string& filename);
 	virtual ~MasterPlaylist();
 
 	unsigned int get_variants_count();

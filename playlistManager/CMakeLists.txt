@@ -5,6 +5,11 @@ set (SRC PlaylistManager.cpp)
 LIST(APPEND SRC RenditionGroups.cpp)
 LIST(APPEND SRC VariantPlaylist.cpp)
 
-include_directories(. ../hlsPlaylist ../playlistFactory)
+include_directories(.)
+include_directories(../hlsPlaylist)
+include_directories(../playlistFactory)
+include_directories(../UrlMonitor)
+include_directories(../curlcpp/include)
+include_directories(../curlcpp/src)
 
 add_library(playlistMgr SHARED ${SRC})

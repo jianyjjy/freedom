@@ -145,19 +145,13 @@ protected:
 
 
 public:
-	PlaylistInterface (std::string filename)
+	PlaylistInterface (std::string& url_path, std::string& filename)
 	{
 		node_count = 0;
 		group = NONE;
-		url = filename;
-		size_t offset = url.find_last_of("/");
-		if(offset != std::string::npos)
-		{
-			path = url.substr(0, offset+1);
-			name = url.substr(offset+1, url.size() - offset);
-		}
-		else
-			name = url;
+		url = url_path + std::string("/") + filename;
+		path = url_path;
+		name = filename;
 	}
 
 	virtual ~PlaylistInterface()

@@ -64,8 +64,9 @@ int main(int argc, char *argv[])
 		std::cout << "Usage: ./playlistParserTool <name.m3u8>" << std::endl;
 		return  -1;
 	}
+
 	PlaylistFactory * hls_pp = PlaylistFactory::get_instance();
-	PlaylistInterface *playlist = hls_pp->getDOM(argv[1]);
+	PlaylistInterface *playlist = hls_pp->getDOM(NULL, argv[1]);
     test1(playlist, argv);
     test2(playlist, argv);
     return 0;
