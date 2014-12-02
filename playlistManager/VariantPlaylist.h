@@ -25,6 +25,7 @@ class VariantPlaylist {
 
 	void my_replace(std::string &original, const char *search, const char *replace);
 	void download_uri(std::string &URI, std::string &path, std::string &local_uri);
+	void http_get_file(const char *url, const char *filename);
 
 public:
 	VariantPlaylist(VariantsInfo *variants_info);

@@ -16,6 +16,7 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
+#include "HTTPGet.h"
 
 VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
@@ -125,4 +126,9 @@ void VariantPlaylist::download_uri(std::string &URI, std::string &path, std::str
 		path.clear();
 		local_uri = URI;
 	}
+	HTTPGet get;
+	get.http_get_file(URI.c_str(), local_uri.c_str());
 }
+
+
+

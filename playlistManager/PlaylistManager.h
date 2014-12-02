@@ -28,7 +28,7 @@ class PlaylistManager {
 	void download_uri();
 
 public:
-	PlaylistManager(char *master_URI);
+	PlaylistManager(char *mstr_URI);
 	virtual ~PlaylistManager();
 	void marshall();
 };

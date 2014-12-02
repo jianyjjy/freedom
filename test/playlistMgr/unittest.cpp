@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	mgr.marshall();
 
 	int count = 0;
-	while(count < 10)
+	while(count < 2)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(10));
 		count++;

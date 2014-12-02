@@ -9,11 +9,13 @@
 #include "PlaylistFactory.h"
 #include "PlaylistManager.h"
 #include "VariantsInfo.h"
+#include "HTTPGet.h"
 
-PlaylistManager::PlaylistManager(char *master_URI)
+PlaylistManager::PlaylistManager(char *mstr_URI)
 {
 	master = NULL;
 	groups.clear();
+	master_URI = std::string(mstr_URI);
 	try
 	{
 		download_uri();
@@ -110,6 +112,7 @@ void PlaylistManager::download_uri()
 		master_uri_path.clear();
 		master_local_uri = master_URI;
 	}
-
-
+	HTTPGet get;
+	get.http_get_file(master_URI.c_str(), master_local_uri.c_str());
 }
+

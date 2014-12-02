@@ -9,5 +9,7 @@ include_directories(.)
 include_directories(../hlsPlaylist)
 include_directories(../playlistFactory)
 include_directories(../UrlMonitor)
+include_directories(../curlcpp/include)
+include_directories(../curlcpp/src)
 
 add_library(playlistMgr SHARED ${SRC})
