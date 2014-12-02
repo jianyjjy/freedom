@@ -18,7 +18,7 @@ using namespace std;
 #define LOG(str) cout << "[LOG] " << str << endl;
 
 
-deque<CompareResultInterface*> CompareFile::get_result(void)
+deque<CompareResultInterface*> CompareFile::compare(void)
 {
 	deque<CompareResultInterface*> diff_result;
 

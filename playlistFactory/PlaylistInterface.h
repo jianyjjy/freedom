@@ -244,6 +244,11 @@ public:
 	{
 		throw std::runtime_error("get_variants -- not implemented for this playlist");
 	}
+
+	std::string get_name()
+	{
+		return name;
+	}
 };
 
 #undef PRINT

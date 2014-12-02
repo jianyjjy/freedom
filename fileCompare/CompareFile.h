@@ -22,7 +22,7 @@ public :
 	void set_first(string filename)		{ first_file = filename; }
 	void set_second(string filename)	{ second_file = filename; }
 
-	deque<CompareResultInterface*> get_result(void);
+	deque<CompareResultInterface*> compare(void);
 };
 
 #endif	//COMPARE_FILE_H

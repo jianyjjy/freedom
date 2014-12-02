@@ -7,11 +7,23 @@
 #include "common.h"
 #include "TaskHandler.h"
 #include "MonitorMgr.h"
+
+#include "CompareFile.h"
+#include "CompareResultInterface.h"
+#include "VariantPlaylist.h"
+#include "HTTPGet.h"
+
 #include "UrlMonitor.h"
+
 
 #define PRINT(X) //
 
-UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr *mgr)
+UrlMonitor::UrlMonitor(
+		std::string uri_name,
+		unsigned poll_interval,
+		MonitorMgr *mgr,
+		PlaylistInterface *playlist_,
+		VariantPlaylist *variant_playlist_)
 {
 	URI = uri_name;
 	size_t path_offset = URI.find_last_of("/");
@@ -22,22 +34,51 @@ UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr 
 	}
 	polling_interval = poll_interval;
 	task_scheduler = mgr;
+
+	playlist = playlist_;
+	variant_playlist = variant_playlist_;
+
+	cached_filename = URI;
+	downloaded_filename = URI + std::string("_dl");
+	my_replace(cached_filename, "/", "_");
+	my_replace(downloaded_filename, "/", "_");
+
+	fc = new CompareFile();
+
+	http_get = new HTTPGet();
 }
 
 UrlMonitor::~UrlMonitor()
 {
 	std::cout << "dtor UrlMonitor " << URI << std::endl;
+	if(fc)
+		delete(fc);
 }
 
 void UrlMonitor::execute()
 {
-	std::this_thread::sleep_for(std::chrono::seconds(2));
-
 	//download the playlist
+	http_get->http_get_file(URI.c_str(), downloaded_filename.c_str());
 
-	//filecompare size
+	//filecompare
+	fc->set_first(cached_filename.c_str());
+	fc->set_second(downloaded_filename.c_str());
+	std::deque<CompareResultInterface*> compare_result = fc->compare();
 
-	//if delta, call file compare module
-
-	//get CompareResultInterface * and give it to corresponding playlist
+	if(compare_result.size() > 0)
+	{
+		rename(downloaded_filename.c_str(), cached_filename.c_str());
+		variant_playlist->update_playlist(compare_result, playlist); 		//get delta to playlist
+	}
 }
+
+void UrlMonitor::my_replace(std::string &original, const char *search, const char *replace)
+{
+	size_t pos = 0;
+	while((pos = original.find(search, pos)) != std::string::npos)
+	{
+		original.replace(pos, 1, replace);
+		pos++;
+	}
+}
+

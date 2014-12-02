@@ -5,4 +5,4 @@ include_directories(../../fileCompare)
 add_executable(filecomparetool unittest.cpp)
 
 
-target_link_libraries(filecomparetool filecompare)
+target_link_libraries(filecomparetool fileCompare)

@@ -14,9 +14,9 @@
 int main()
 {
 	MonitorMgr *mgr = MonitorMgr::get_instance();
-	mgr->create_url_monitor("media1.m3u8", 3);
-	mgr->create_url_monitor("media2.m3u8", 5);
-	mgr->create_url_monitor("media3.m3u8", 10);
+	mgr->create_url_monitor("media1.m3u8", 3, NULL, NULL);
+	mgr->create_url_monitor("media2.m3u8", 5, NULL, NULL);
+	mgr->create_url_monitor("media3.m3u8", 10, NULL, NULL);
 
 	int count = 0;
 	while(count < 2)

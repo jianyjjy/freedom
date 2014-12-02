@@ -139,11 +139,15 @@ void MonitorMgr::timer_thread()
 /*
  * Url Monitor
  */
-void MonitorMgr::create_url_monitor(std::string playlist_name, unsigned int poll_interval)
+void MonitorMgr::create_url_monitor(
+		std::string playlist_name,
+		unsigned int poll_interval,
+		PlaylistInterface *playlist,
+		VariantPlaylist *variant_playlist)
 {
 	std::unique_lock<std::mutex> lk(m);
 	std::cout << "create urlmonitor " << playlist_name << "(poll " << poll_interval << "s)\n";
-	std::shared_ptr<UrlMonitor> url_monitor(new UrlMonitor(playlist_name, poll_interval, this));
+	std::shared_ptr<UrlMonitor> url_monitor(new UrlMonitor(playlist_name, poll_interval, this, playlist, variant_playlist));
 	urlMonitorQueue.push_back(url_monitor);
 	schedule_task(url_monitor, false);
 }

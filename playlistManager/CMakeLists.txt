@@ -8,6 +8,7 @@ LIST(APPEND SRC VariantPlaylist.cpp)
 include_directories(.)
 include_directories(../playlistFactory)
 include_directories(../taskScheduler)
+include_directories(../fileCompare)
 include_directories(../curlcpp/include)
 include_directories(../curlcpp/src)
 

@@ -18,6 +18,8 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
+
+
 VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
 	media = NULL;
@@ -33,14 +35,14 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 	{
 		std::cout << "mediaURI " << media_URI << std::endl;
 		download_uri(media_URI, media_uri_path, media_local_uri);
-
+		//create DOM
 		try {
 			media = factory->getDOM(media_uri_path.c_str(), media_local_uri.c_str());
 		} catch (std::exception & e) {
 			std::cout << e.what() << std::endl;
 		}
-
-		mgr->create_url_monitor(media_URI.c_str(), 10);
+		//monitor
+		mgr->create_url_monitor(media_URI.c_str(), 10, media, this);
 	}
 
 	iframe_URI = variants_info->get_iframe_URI();
@@ -48,13 +50,14 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 	{
 		std::cout << "iframeURI " << iframe_URI << std::endl;
 		download_uri(iframe_URI, iframe_uri_path, iframe_local_uri);
-
+		//create DOM
 		try {
 			iframe = factory->getDOM(iframe_uri_path.c_str(), iframe_local_uri.c_str());
 		} catch (std::exception & e) {
 			std::cout << e.what() << std::endl;
 		}
-		mgr->create_url_monitor(iframe_URI.c_str(), 8);
+		//monitor
+		mgr->create_url_monitor(iframe_URI.c_str(), 8, iframe, this);
 	}
 }
 
@@ -135,5 +138,13 @@ void VariantPlaylist::download_uri(std::string &URI, std::string &path, std::str
 		local_uri = URI;
 }
 
+
+void VariantPlaylist::update_playlist(std::deque<CompareResultInterface*> compare_result, PlaylistInterface *playlist)
+{
+	std::cout << "got change for playlist " << playlist->get_name() << std::endl;
+	for(unsigned int i = 0; i < compare_result.size(); i++)
+		cout << compare_result[i]->marshall();
+	std::cout << "-----------------------------\n";
+}
 
 

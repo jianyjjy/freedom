@@ -11,7 +11,7 @@
 class MonitorMgr;
 
 #include "PlaylistInterface.h"
-
+#include "CompareResultInterface.h"
 
 class VariantPlaylist {
 
@@ -36,6 +36,7 @@ public:
 	VariantPlaylist(VariantsInfo *variants_info);
 	virtual ~VariantPlaylist();
 	void marshall();
+	void update_playlist(std::deque<CompareResultInterface*> compare_result, PlaylistInterface *playlist);
 };
 
 #endif /* VARIANTPLAYLIST_H_ */
