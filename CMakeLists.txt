@@ -4,7 +4,7 @@ set(CMAKE_SYSTEM_NAME Linux)
 
 link_directories(/usr/local/lib)
 
-include_directories(include)
+include_directories(.)
 
 
 
