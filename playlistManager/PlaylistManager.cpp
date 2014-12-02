@@ -112,7 +112,12 @@ void PlaylistManager::download_uri()
 		master_uri_path.clear();
 		master_local_uri = master_URI;
 	}
-	HTTPGet get;
-	get.http_get_file(master_URI.c_str(), master_local_uri.c_str());
+	if(master_URI.find("http") != std::string::npos)
+	{
+		HTTPGet get;
+		get.http_get_file(master_URI.c_str(), master_local_uri.c_str());
+	}
+	else
+		master_local_uri = master_URI;
 }
 

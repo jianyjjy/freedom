@@ -126,8 +126,13 @@ void VariantPlaylist::download_uri(std::string &URI, std::string &path, std::str
 		path.clear();
 		local_uri = URI;
 	}
-	HTTPGet get;
-	get.http_get_file(URI.c_str(), local_uri.c_str());
+	if(URI.find("http") != std::string::npos)
+	{
+		HTTPGet get;
+		get.http_get_file(URI.c_str(), local_uri.c_str());
+	}
+	else
+		local_uri = URI;
 }
 
 

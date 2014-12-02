@@ -11,7 +11,7 @@
 #include "Task.h"
 
 
-#define PRINT(X) //
+#define PRINT(X) //X
 
 #define THREAD_POOL_DEPTH (2)
 
@@ -112,18 +112,19 @@ void MonitorMgr::timer_thread()
 		}
 		//std::cout << "timer thread, take the task with nearest time point\n";
 		std::shared_ptr<Task> tk = scheduled_tasks.top();
-		try {
-			std::shared_ptr<UrlMonitor> url_monitor = tk.get()->get_url_monitor();
-			schedule_task(url_monitor, true);
-		} catch (std::exception & e) {
-			std::cout << e.what() <<std::endl;
-		}
-
 		PRINT(std::cout << "timer for " << tk.get()->get_name() << "\n");
 		if(cv.wait_until(lk, tk.get()->get_absolute_time()) == std::cv_status::timeout)
 		{
 			//std::cout << "execution of tasks in thread pool\n";
 			scheduled_tasks.pop();
+
+			try {
+				std::shared_ptr<UrlMonitor> url_monitor = tk.get()->get_url_monitor();
+				schedule_task(url_monitor, true);
+			} catch (std::exception & e) {
+				std::cout << e.what() <<std::endl;
+			}
+
 			TaskHandler *th = get_task_handler();
 			std::cout << currentDateTime() << " Th#" << th->get_id() << " execute task for " << tk.get()->get_name() << std::endl;
 			th->add_task(tk);
