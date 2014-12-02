@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	fc.set_second(argv[2]);
 	try
 	{
-		deque<CompareResultInterface*> compare_result = fc.get_result();
+		deque<CompareResultInterface*> compare_result = fc.compare();
 		if( compare_result.size() == 0 )
 			cout << "Both files are indentical" << endl;
 		else
