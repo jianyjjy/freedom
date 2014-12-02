@@ -13,7 +13,7 @@
 
 #define PRINT(X) //
 
-#define THREAD_POOL_DEPTH (10)
+#define THREAD_POOL_DEPTH (2)
 
 
 MonitorMgr *MonitorMgr::instance = NULL;
@@ -68,7 +68,8 @@ TaskHandler* MonitorMgr::get_task_handler()
 	std::unique_lock<std::mutex> lk(tp_m);
 	if(available_taskhandlers.size() == 0)
 	{
-		create_task_handler();
+		if(task_handlers.size() < thread_pool_size)
+			create_task_handler();
 		tp_cv.wait(lk);
 	}
 	current = available_taskhandlers.front();
@@ -185,8 +186,8 @@ void MonitorMgr::add_task(Task *tk)
 
 void MonitorMgr::clear_scheduled_tasks()
 {
+	std::unique_lock<std::mutex> lk(m);
 	while(scheduled_tasks.size() > 0)
 		scheduled_tasks.pop();
-	std::unique_lock<std::mutex> lk(m);
 	cv.notify_one();
 }

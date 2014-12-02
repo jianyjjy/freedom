@@ -36,7 +36,6 @@ class PlaylistInterface
 protected:
 	std::string path;
 	std::string name;
-	std::string url;
 
 	Playlist playlist;
 	unsigned int node_count;
@@ -149,7 +148,6 @@ public:
 	{
 		node_count = 0;
 		group = NONE;
-		url = url_path + std::string("/") + filename;
 		path = url_path;
 		name = filename;
 	}
@@ -232,7 +230,7 @@ public:
 	{
 		PRINT(std::cout << "marshall()\n");
 		std::ostringstream oss;
-		oss << url << std::endl;
+		oss << name << std::endl;
 		oss << playlist.marshall() << std::endl;
 		return oss.str();
 	}

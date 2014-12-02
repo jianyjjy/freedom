@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (playlistMgrtool)
 
-include_directories(. ../../hlsPlaylist ../../playlistFactory ../../playlistManager)
+include_directories(. ../../hlsPlaylist ../../playlistFactory ../../playlistManager )
 add_executable(playlistMgrtool unittest.cpp)
 
 

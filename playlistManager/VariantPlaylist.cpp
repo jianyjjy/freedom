@@ -11,12 +11,12 @@
 #include "VariantsInfo.h"
 #include "PlaylistFactory.h"
 
+
+#include "HTTPGet.h"
 #include "monitor_common.h"
 #include "MonitorMgr.h"
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
-
-#include "HTTPGet.h"
 
 VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
@@ -26,7 +26,7 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 	iframe_uri_path.clear();
 
 	PlaylistFactory * factory = PlaylistFactory::get_instance();
-	MonitorMgr *mgr = MonitorMgr::get_instance();
+	mgr = MonitorMgr::get_instance();
 
 	media_URI = variants_info->get_media_URI();
 	if(!media_URI.empty())
@@ -40,7 +40,7 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 			std::cout << e.what() << std::endl;
 		}
 
-		mgr->create_url_monitor(media_URI.c_str(), 5);
+		mgr->create_url_monitor(media_URI.c_str(), 10);
 	}
 
 	iframe_URI = variants_info->get_iframe_URI();
@@ -54,13 +54,12 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 		} catch (std::exception & e) {
 			std::cout << e.what() << std::endl;
 		}
-		mgr->create_url_monitor(iframe_URI.c_str(), 3);
+		mgr->create_url_monitor(iframe_URI.c_str(), 8);
 	}
 }
 
 VariantPlaylist::~VariantPlaylist()
 {
-	MonitorMgr *mgr = MonitorMgr::get_instance();
 	if(!media_URI.empty())
 	{
 		mgr->remove_url_monitor(media_URI.c_str());
@@ -71,6 +70,7 @@ VariantPlaylist::~VariantPlaylist()
 		mgr->remove_url_monitor(iframe_URI.c_str());
 		iframe_URI.clear();
 	}
+	mgr->delete_instance();
 
 	if(media)
 	{

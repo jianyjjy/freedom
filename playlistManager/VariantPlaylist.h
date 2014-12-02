@@ -8,7 +8,10 @@
 #ifndef VARIANTPLAYLIST_H_
 #define VARIANTPLAYLIST_H_
 
+class MonitorMgr;
+
 #include "PlaylistInterface.h"
+
 
 class VariantPlaylist {
 
@@ -22,6 +25,8 @@ class VariantPlaylist {
 
 	PlaylistInterface *media;
 	PlaylistInterface *iframe;
+
+	MonitorMgr *mgr;
 
 	void my_replace(std::string &original, const char *search, const char *replace);
 	void download_uri(std::string &URI, std::string &path, std::string &local_uri);
