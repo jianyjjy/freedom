@@ -136,4 +136,12 @@ void VariantPlaylist::download_uri(std::string &URI, std::string &path, std::str
 }
 
 
+void VariantPlaylist::update_media_playlist(deque<CompareResultInterface*> compare_result, PlaylistInterface *playlist)
+{
+	std::cout << "got change for playlist " << playlist->get_name() << std::endl;
+	for(auto pResult : compare_result)
+		cout << pResult->marshall();
+
+}
+
 

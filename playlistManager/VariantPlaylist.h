@@ -36,6 +36,7 @@ public:
 	VariantPlaylist(VariantsInfo *variants_info);
 	virtual ~VariantPlaylist();
 	void marshall();
+	void update_media_playlist(deque<CompareResultInterface*> compare_result, PlaylistInterface *playlist);
 };
 
 #endif /* VARIANTPLAYLIST_H_ */
