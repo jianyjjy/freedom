@@ -8,7 +8,7 @@
 #include "MonitorMgr.h"
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
-
+#include "Task.h"
 
 
 #define PRINT(X) //
@@ -26,7 +26,7 @@ MonitorMgr::MonitorMgr()
 	task_handler_count = 0;
 	destroy = false;
 	timer = new std::thread(&MonitorMgr::timer_thread, this);
-	urlMonitor.clear();
+	urlMonitorQueue.clear();
 }
 
 
@@ -111,15 +111,21 @@ void MonitorMgr::timer_thread()
 			continue;
 		}
 		//std::cout << "timer thread, take the task with nearest time point\n";
-		Task *tk = scheduled_tasks.top();
-		PRINT(std::cout << "timer for " << tk->get_name() << "\n");
-		if(cv.wait_until(lk, tk->get_absolute_time()) == std::cv_status::timeout)
+		std::shared_ptr<Task> tk = scheduled_tasks.top();
+		try {
+			std::shared_ptr<UrlMonitor> url_monitor = tk.get()->get_url_monitor();
+			schedule_task(url_monitor, true);
+		} catch (std::exception & e) {
+			std::cout << e.what() <<std::endl;
+		}
+
+		PRINT(std::cout << "timer for " << tk.get()->get_name() << "\n");
+		if(cv.wait_until(lk, tk.get()->get_absolute_time()) == std::cv_status::timeout)
 		{
-			//std::cout << "execute - just expired\n";
 			//std::cout << "execution of tasks in thread pool\n";
 			scheduled_tasks.pop();
 			TaskHandler *th = get_task_handler();
-			std::cout << currentDateTime() << " Th#" << th->get_id() << " execute task for " << tk->get_name() << std::endl;
+			std::cout << currentDateTime() << " Th#" << th->get_id() << " execute task for " << tk.get()->get_name() << std::endl;
 			th->add_task(tk);
 		}
 	}
@@ -136,29 +142,29 @@ void MonitorMgr::create_url_monitor(std::string playlist_name, unsigned int poll
 {
 	std::unique_lock<std::mutex> lk(m);
 	std::cout << "create urlmonitor " << playlist_name << "(poll " << poll_interval << "s)\n";
-	UrlMonitor *task = new UrlMonitor(playlist_name, poll_interval, this);
-	urlMonitor.push_back(task);
+	std::shared_ptr<UrlMonitor> url_monitor(new UrlMonitor(playlist_name, poll_interval, this));
+	urlMonitorQueue.push_back(url_monitor);
+	schedule_task(url_monitor, false);
 }
 
 void MonitorMgr::remove_all_url_monitor()
 {
 	std::unique_lock<std::mutex> lk(m);
-	for(unsigned int i = 0; i < urlMonitor.size(); i++)
-		delete(urlMonitor[i]);
-	urlMonitor.clear();
+	for(auto it = urlMonitorQueue.begin(), ite = urlMonitorQueue.end(); it != ite; it++)
+		it = urlMonitorQueue.erase(it);
+	urlMonitorQueue.clear();
 }
 
 void MonitorMgr::remove_url_monitor(const char * playlist_name)
 {
 	std::unique_lock<std::mutex> lk(m);
 	bool found = false;
-	for(auto it = urlMonitor.begin(), ite = urlMonitor.end(); it != ite; it++)
+	for(auto it = urlMonitorQueue.begin(), ite = urlMonitorQueue.end(); it != ite; it++)
 	{
-		if((*it)->get_name().compare(playlist_name) == 0)
+		if((*it).get()->get_name().compare(playlist_name) == 0)
 		{
 			found = true;
-			delete(*it);
-			it = urlMonitor.erase(it);
+			it = urlMonitorQueue.erase(it);
 			break;
 		}
 	}
@@ -174,11 +180,11 @@ void MonitorMgr::remove_url_monitor(const char * playlist_name)
  * Task related
  */
 
-void MonitorMgr::add_task(Task *tk)
+void MonitorMgr::add_task(std::shared_ptr<Task> tk)
 {
 	if(!destroy)
 	{
-		PRINT(std::cout << "add task " << tk->get_name() << std::endl);
+		PRINT(std::cout << "add task " << tk.get()->get_name() << std::endl);
 		scheduled_tasks.push(tk);
 		cv.notify_one();
 	}
@@ -190,4 +196,14 @@ void MonitorMgr::clear_scheduled_tasks()
 	while(scheduled_tasks.size() > 0)
 		scheduled_tasks.pop();
 	cv.notify_one();
+}
+
+void MonitorMgr::schedule_task(std::shared_ptr<UrlMonitor> url_monitor, bool delayed)
+{
+	try {
+		std::shared_ptr<Task> task(new Task(url_monitor, delayed));
+		add_task(task);
+	} catch (std::exception & e) {
+		std::cout << e.what() <<std::endl;
+	}
 }

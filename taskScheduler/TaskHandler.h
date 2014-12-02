@@ -18,7 +18,7 @@ class TaskHandler
 	std::thread* tid;
 	MonitorMgr *thread_pool_mgr;
 
-	std::deque<Task *> tasks_to_execute;
+	std::deque<std::shared_ptr<Task>> tasks_to_execute;
 	bool destroy;
 	void wakeup();
 	void execute_task();
@@ -26,7 +26,7 @@ class TaskHandler
 public:
 	TaskHandler(MonitorMgr *mgr, unsigned int count);
 	virtual ~TaskHandler();
-	void add_task(Task *t);
+	void add_task(std::shared_ptr<Task> t);
 	unsigned int get_id()
 	{
 		return id;

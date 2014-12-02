@@ -22,7 +22,6 @@ UrlMonitor::UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr 
 	}
 	polling_interval = poll_interval;
 	task_scheduler = mgr;
-	schedule_task();
 }
 
 UrlMonitor::~UrlMonitor()
@@ -30,11 +29,8 @@ UrlMonitor::~UrlMonitor()
 	std::cout << "dtor UrlMonitor " << URI << std::endl;
 }
 
-void UrlMonitor::execute(TaskHandler *th)
+void UrlMonitor::execute()
 {
-	//schedule next-task
-	schedule_future_task();
-
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	//download the playlist

@@ -8,19 +8,21 @@
 #ifndef TASK_H_
 #define TASK_H_
 
+class UrlMonitor;
+
 class Task
 {
+	std::weak_ptr<UrlMonitor> url_monitor;
+	std::chrono::time_point<std::chrono::system_clock> scheduled_time;
+	std::string name;
+
 public:
-	Task(){};
+	Task(std::shared_ptr<UrlMonitor> monitor_sp, bool delayed = false);
 	virtual ~Task(){};
-	bool operator()(Task *lhs, Task *rhs) const
-	{
-		return(lhs->get_absolute_time()>rhs->get_absolute_time());
-	}
-	virtual void execute(TaskHandler *th) = 0;
-	virtual std::chrono::time_point<std::chrono::system_clock> get_absolute_time() = 0;
-	virtual void schedule_task() = 0;
-	virtual std::string get_name() = 0;
+	void execute();
+	std::chrono::time_point<std::chrono::system_clock> get_absolute_time();
+	std::string get_name();
+	std::shared_ptr<UrlMonitor> get_url_monitor();
 };
 
 
