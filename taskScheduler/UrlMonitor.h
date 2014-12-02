@@ -12,7 +12,7 @@
 
 
 
-class UrlMonitor : public Task
+class UrlMonitor
 {
 
 	std::string URI;
@@ -20,33 +20,23 @@ class UrlMonitor : public Task
 	std::string name;
 	MonitorMgr *task_scheduler;
 	unsigned int polling_interval;
-	std::chrono::time_point<std::chrono::system_clock> next_time_slot;
+
 
 public:
 	UrlMonitor(std::string uri_name, unsigned poll_interval, MonitorMgr *mgr);
 	virtual ~UrlMonitor();
-	void execute(TaskHandler *th);
+	void execute();
 
-	std::chrono::time_point<std::chrono::system_clock> get_absolute_time()
+	unsigned int get_poll_interval()
 	{
-		return next_time_slot;
+		return polling_interval;
 	};
 
 	std::string get_name()
 	{
 		return URI;
 	}
-	void schedule_future_task()
-	{
-		next_time_slot = std::chrono::system_clock::now() + std::chrono::seconds(polling_interval);
-		task_scheduler->add_task(this);
-	}
 
-	void schedule_task()
-	{
-		next_time_slot = std::chrono::system_clock::now();
-		task_scheduler->add_task(this);
-	}
 
 };
 

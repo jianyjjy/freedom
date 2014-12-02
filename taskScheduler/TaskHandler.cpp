@@ -39,9 +39,13 @@ void TaskHandler::execute_task()
 			cv.wait(lk);
 			continue;
 		}
-		Task *t = tasks_to_execute.back();
+		std::shared_ptr<Task> t = tasks_to_execute.back();
 		tasks_to_execute.pop_back();
-		t->execute(this);
+		try {
+			t.get()->execute();
+		} catch (std::exception & e) {
+			std::cout << e.what() <<std::endl;
+		}
 	}
 	return;
 }
@@ -52,7 +56,7 @@ void TaskHandler::wakeup()
 	cv.notify_one();
 }
 
-void TaskHandler::add_task(Task *t)
+void TaskHandler::add_task(std::shared_ptr<Task> t)
 {
 	std::unique_lock<std::mutex> lk(m);
 	tasks_to_execute.push_back(t);
