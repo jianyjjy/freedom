@@ -16,8 +16,9 @@ PlaylistManager::PlaylistManager(char *master_URI)
 	groups.clear();
 	try
 	{
+		download_uri();
 		PlaylistFactory * factory = PlaylistFactory::get_instance();
-		master = factory->getDOM(master_URI);
+		master = factory->getDOM(master_uri_path.c_str(), master_local_uri.c_str());
 		create_groups();
 	}
 	catch (std::exception & e)
@@ -25,8 +26,6 @@ PlaylistManager::PlaylistManager(char *master_URI)
 		std::cout << e.what() << std::endl;
 		throw e;
 	}
-
-
 }
 
 PlaylistManager::~PlaylistManager()
@@ -85,4 +84,32 @@ void PlaylistManager::marshall()
 
 	for(unsigned int i = 0; i < groups.size(); i++)
 		groups[i]->marshall();
+}
+
+void PlaylistManager::my_replace(std::string &original, const char *search, const char *replace)
+{
+	size_t pos = 0;
+	while((pos = original.find(search, pos)) != std::string::npos)
+	{
+		original.replace(pos, 1, replace);
+		pos++;
+	}
+}
+
+void PlaylistManager::download_uri()
+{
+	size_t offset = master_URI.find_last_of("/");
+	if(offset != std::string::npos)
+	{
+		master_uri_path = master_URI.substr(0, offset+1);
+		master_local_uri = master_URI;
+		my_replace(master_local_uri, "/", "_");
+	}
+	else
+	{
+		master_uri_path.clear();
+		master_local_uri = master_URI;
+	}
+
+
 }

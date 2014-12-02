@@ -147,7 +147,7 @@ void MonitorMgr::remove_all_url_monitor()
 	urlMonitor.clear();
 }
 
-void MonitorMgr::remove_url_monitor(char * playlist_name)
+void MonitorMgr::remove_url_monitor(const char * playlist_name)
 {
 	std::unique_lock<std::mutex> lk(m);
 	bool found = false;

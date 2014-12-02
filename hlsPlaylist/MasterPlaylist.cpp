@@ -8,7 +8,7 @@
 #include "MasterPlaylist.h"
 #include "VariantsInfo.h"
 
-MasterPlaylist::MasterPlaylist(std::string filename) : PlaylistInterface(filename)
+MasterPlaylist::MasterPlaylist(std::string& url_path, std::string& filename) : PlaylistInterface(url_path, filename)
 {
 	playlist_type = MASTER;
 	variants.clear();

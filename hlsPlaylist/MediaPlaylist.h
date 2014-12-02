@@ -16,7 +16,7 @@ class MediaPlaylist : public PlaylistInterface
 	unsigned int sequence_number;
 	unsigned int node_count;
 public:
-	MediaPlaylist(std::string filename);
+	MediaPlaylist(std::string& url_path, std::string& filename);
 	virtual ~MediaPlaylist();
 };
 

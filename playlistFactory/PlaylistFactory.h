@@ -27,6 +27,7 @@ class PlaylistFactory {
 	static PlaylistFactory *instance;
 	static unsigned int count;
 
+	std::string path;
 	std::string filename;
 	std::ifstream infile;
 	PlaylistInterface *playlist;
@@ -72,11 +73,7 @@ public:
 		if(count == 0)
 			delete (instance);
 	}
-	PlaylistInterface *getDOM(char *str);
-	PlaylistInterface *getDOM(const char *str)
-	{
-		return getDOM((char *)str);
-	}
+	PlaylistInterface *getDOM(const char *url_path, const char *str);
 };
 
 #endif /* PLAYLISTPARSER_H_ */
