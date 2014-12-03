@@ -18,7 +18,7 @@
 #include "UrlMonitor.h"
 #include "TaskHandler.h"
 
-
+#define POLL_INTERVAL (10)
 
 VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 {
@@ -26,6 +26,8 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 	iframe = NULL;
 	media_uri_path.clear();
 	iframe_uri_path.clear();
+
+	unsigned int poll_interval = POLL_INTERVAL;
 
 	PlaylistFactory * factory = PlaylistFactory::get_instance();
 	mgr = MonitorMgr::get_instance();
@@ -38,11 +40,13 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 		//create DOM
 		try {
 			media = factory->getDOM(media_uri_path.c_str(), media_local_uri.c_str());
+			poll_interval = media->get_target_duration() -1;
 		} catch (std::exception & e) {
 			std::cout << e.what() << std::endl;
+			poll_interval = POLL_INTERVAL;
 		}
 		//monitor
-		mgr->create_url_monitor(media_URI.c_str(), 10, media, this);
+		mgr->create_url_monitor(media_URI.c_str(), poll_interval, media, this);
 	}
 
 	iframe_URI = variants_info->get_iframe_URI();
@@ -57,7 +61,7 @@ VariantPlaylist::VariantPlaylist(VariantsInfo *variants_info)
 			std::cout << e.what() << std::endl;
 		}
 		//monitor
-		mgr->create_url_monitor(iframe_URI.c_str(), 8, iframe, this);
+		mgr->create_url_monitor(iframe_URI.c_str(), poll_interval/2, iframe, this);
 	}
 }
 

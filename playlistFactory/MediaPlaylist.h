@@ -18,6 +18,7 @@ class MediaPlaylist : public PlaylistInterface
 public:
 	MediaPlaylist(std::string& url_path, std::string& filename);
 	virtual ~MediaPlaylist();
+	unsigned int get_target_duration();
 };
 
 #endif /* MEDIAPLAYLIST_H_ */

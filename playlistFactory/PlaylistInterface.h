@@ -249,6 +249,11 @@ public:
 	{
 		return name;
 	}
+
+	virtual unsigned int get_target_duration()
+	{
+		throw std::runtime_error("get_target_duration -- not implemented for this playlist");
+	};
 };
 
 #undef PRINT

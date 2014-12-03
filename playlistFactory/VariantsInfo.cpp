@@ -10,7 +10,7 @@
 
 VariantsInfo::VariantsInfo(Section *section, std::string master_path)
 {
-	std::cout << "creating variant info for section " << section->get_name() <<std::endl;
+	//std::cout << "creating variant info for section " << section->get_name() <<std::endl;
 	std::string media_tag("#EXT-X-MEDIA");
 	std::string stream_tag("#EXT-X-STREAM-INF");
 	std::string iframe_tag("#EXT-X-I-FRAME-STREAM-INF");

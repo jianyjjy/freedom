@@ -127,6 +127,16 @@ public:
 
 	};
 
+	Tag *get_tag(std::string name)
+	{
+		for(unsigned int i = 0; i < tags.size(); i++)
+		{
+			if(tags[i]->get_name() == name)
+				return tags[i];
+		}
+		return NULL;
+	}
+
 	friend class VariantsInfo;
 };
 
