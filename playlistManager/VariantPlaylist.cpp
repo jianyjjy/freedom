@@ -66,24 +66,25 @@ VariantPlaylist::~VariantPlaylist()
 	if(!media_URI.empty())
 	{
 		mgr->remove_url_monitor(media_URI.c_str());
-		media_URI.clear();
 	}
 	if(!iframe_URI.empty())
 	{
 		mgr->remove_url_monitor(iframe_URI.c_str());
-		iframe_URI.clear();
 	}
+
 	mgr->delete_instance();
 
 	if(media)
 	{
 		delete(media);
 		media = NULL;
+		media_URI.clear();
 	}
 	if(iframe)
 	{
 		delete(iframe);
 		iframe = NULL;
+		iframe_URI.clear();
 	}
 }
 
@@ -93,6 +94,7 @@ void VariantPlaylist::marshall()
 	{
 		std::cout << "--------------------------------------------------\n";
 		std::cout << "Media playlist " << std::endl;
+		std::cout << media_URI << std::endl;
 		std::cout << media->marshall();
 	}
 
@@ -100,6 +102,7 @@ void VariantPlaylist::marshall()
 	{
 		std::cout << "--------------------------------------------------\n";
 		std::cout << "Iframe playlist " << std::endl;
+		std::cout << iframe_URI << std::endl;
 		std::cout << iframe->marshall();
 	}
 
@@ -141,7 +144,11 @@ void VariantPlaylist::download_uri(std::string &URI, std::string &path, std::str
 
 void VariantPlaylist::update_playlist(std::deque<CompareResultInterface*> compare_result, PlaylistInterface *playlist)
 {
-	std::cout << "got change for playlist " << playlist->get_name() << std::endl;
+	if(playlist == media)
+		std::cout << "Delta for " << media_URI << std::endl;
+	if(playlist == iframe)
+		std::cout << "Delta for " << iframe_URI << std::endl;
+
 	for(unsigned int i = 0; i < compare_result.size(); i++)
 		cout << compare_result[i]->marshall();
 	std::cout << "-----------------------------\n";

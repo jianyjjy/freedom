@@ -230,7 +230,7 @@ public:
 	{
 		PRINT(std::cout << "marshall()\n");
 		std::ostringstream oss;
-		oss << name << std::endl;
+		//oss << name << std::endl;
 		oss << playlist.marshall() << std::endl;
 		return oss.str();
 	}
