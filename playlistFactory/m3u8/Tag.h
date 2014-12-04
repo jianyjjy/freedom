@@ -106,6 +106,8 @@ public:
 	}
 
 	friend class VariantsInfo;
+	friend class MediaPlaylist;
+	friend class IFramePlaylist;
 };
 
 

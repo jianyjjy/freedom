@@ -230,7 +230,7 @@ public:
 	{
 		PRINT(std::cout << "marshall()\n");
 		std::ostringstream oss;
-		oss << name << std::endl;
+		//oss << name << std::endl;
 		oss << playlist.marshall() << std::endl;
 		return oss.str();
 	}
@@ -249,6 +249,11 @@ public:
 	{
 		return name;
 	}
+
+	virtual unsigned int get_target_duration()
+	{
+		throw std::runtime_error("get_target_duration -- not implemented for this playlist");
+	};
 };
 
 #undef PRINT
