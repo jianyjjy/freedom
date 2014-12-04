@@ -2,10 +2,7 @@
 #EXT-X-VERSION:4
 #EXT-X-PLAYLIST-TYPE:EVENT
 #EXT-X-TARGETDURATION:2
-#EXT-X-MEDIA-SEQUENCE:1
-#EXTINF:1.041
-#EXT-X-BYTERANGE:206048@432588
-http://10.121.1.121:80/hlschunks//quality1/transcoded_output.ts
+#EXT-X-MEDIA-SEQUENCE:2
 #EXTINF:1.041
 #EXT-X-BYTERANGE:166004@638636
 http://10.121.1.121:80/hlschunks//quality1/transcoded_output.ts
@@ -24,3 +21,7 @@ http://10.121.1.121:80/hlschunks//quality1/transcoded_output.ts
 #EXTINF:1.041
 #EXT-X-BYTERANGE:371488@1600976
 http://10.121.1.121:80/hlschunks//quality1/transcoded_output.ts
+#EXTINF:1.041
+#EXT-X-BYTERANGE:20604@4000000
+http://10.121.1.121:80/hlschunks//quality1/transcoded_output.ts
+
