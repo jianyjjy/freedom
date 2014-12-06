@@ -7,15 +7,14 @@
 using namespace std;
 
 
-DeletedLine::DeletedLine(long long src_index, long long dst_index, long long num3, string str)
+DeletedLine::DeletedLine(long long src_index, long long dst_index)
 	: CompareResultInterface(ResultTypes::DELETED)
 {
 	src_line_index = src_index;
 	dst_line_index = dst_index;
-	if( !str.empty() )	src_lines.push_back(str);
 }
 
-void DeletedLine::add_line(string str)
+void DeletedLine::add_src_str(string str)
 {
         src_lines.push_back(str);
 }

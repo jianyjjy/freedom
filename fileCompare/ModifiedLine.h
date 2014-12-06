@@ -8,9 +8,10 @@
 class ModifiedLine : public CompareResultInterface
 {
 public :
-	ModifiedLine(long long src_index, long long dst_index, string src_str, string dst_str);
+	ModifiedLine(long long src_index, long long dst_index);
 
-	void add_line(string src_str, string dst_str);
+	void add_src_str(string str);
+	void add_dst_str(string str);
 	string marshall(void);
 };
 

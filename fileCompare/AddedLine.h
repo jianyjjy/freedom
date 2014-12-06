@@ -8,9 +8,9 @@
 class AddedLine : public CompareResultInterface
 {
 public :
-	AddedLine(long long src_index, long long dst_index, long long num3, string str);
+	AddedLine(long long src_index, long long dst_index);
 
-	void add_line(string str);
+	void add_dst_str(string str);
 	string marshall(void);
 };
 

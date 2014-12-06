@@ -7,6 +7,7 @@
 #include "AddedLine.h"
 #include "ModifiedLine.h"
 
+#include <vector>
 #include <fstream>
 #include <algorithm>
 #include <limits>
@@ -17,6 +18,57 @@ using namespace std;
 using namespace std;
 #define LOG(str) //cout << "[LOG] " << str << endl;
 
+struct CommonSubSeq
+{
+	int src_st;
+	int dst_st;
+	int len;
+};
+
+CommonSubSeq* CompareFile::longest_common_subseq(deque<string> data1, int start1, int end1, deque<string>data2, int start2, int end2)
+{
+	CommonSubSeq* pLCS = new CommonSubSeq();
+	pLCS->src_st = start1;
+	pLCS->dst_st = start2;
+	pLCS->len = 0;
+
+	vector< vector<int> > lcs(data1.size(), vector<int>(data2.size(), 0) );
+	int lcs_len;
+	for( auto itr1 = start1 ; itr1 < end1 ; itr1++ )
+	{
+		for( auto itr2 = start2 ; itr2 < end2 ; itr2++ )
+		{
+			if( data1[itr1] != data2[itr2] )
+				continue;
+
+			if( itr1 > start1 && itr2 > start2 )
+				lcs_len = lcs[itr1][itr2] = lcs[itr1-1][itr2-1] + 1;
+			else
+				lcs_len = lcs[itr1][itr2] = 1;
+			if( lcs_len > pLCS->len )
+			{
+				pLCS->src_st = itr1-lcs_len+1;
+				pLCS->dst_st = itr2-lcs_len+1;
+				pLCS->len = lcs_len;
+			}
+		}
+	}
+
+	return pLCS;
+}
+
+void CompareFile::find_common_subseqs(deque<string> data1, int start1, int end1, deque<string> data2, int start2, int end2, deque<CommonSubSeq*>* pCommonSeqs)
+{
+	CommonSubSeq* common_subseq = longest_common_subseq(data1, start1, end1, data2, start2, end2);
+	if( common_subseq->len == 0 )
+		return;
+
+	find_common_subseqs(data1, start1, common_subseq->src_st, data2, start2, common_subseq->dst_st, pCommonSeqs);
+	pCommonSeqs->push_back(common_subseq);
+	find_common_subseqs(data1, common_subseq->src_st + common_subseq->len, end1, data2, common_subseq->dst_st + common_subseq->len, end2, pCommonSeqs);
+
+	return;
+}
 
 deque<CompareResultInterface*> CompareFile::compare(void)
 {
@@ -56,114 +108,58 @@ deque<CompareResultInterface*> CompareFile::compare(void)
 		LOG("READING FILES FINISHED");
 	}
 
-	CompareResultInterface* compare_result = nullptr;
+	deque<CommonSubSeq*> common_subseqs;
+	find_common_subseqs(data1, 0, data1.size(), data2, 0, data2.size(), &common_subseqs);
 
-	auto itr1 = data1.begin();
-	auto itr2 = data2.begin();
+	CommonSubSeq* final_empty_subseq = new CommonSubSeq();
+	final_empty_subseq->src_st = data1.size();
+	final_empty_subseq->dst_st = data2.size();
+	final_empty_subseq->len = 0;
 
-	while( itr1 != data1.end() && itr2 != data2.end() )
+	common_subseqs.push_back(final_empty_subseq);
+
+	int itr1 = 0;
+	int itr2 = 0;
+	for( CommonSubSeq* subseq : common_subseqs )
 	{
-		//READING CONTINOUS MATCHING DATA
-		if( *itr1 == *itr2 )
+		CompareResultInterface* compare_result = nullptr;
+
+		if( itr1 != subseq->src_st && itr2 != subseq->dst_st )
 		{
-			//LOG(*itr1)
-			itr1++;
-			itr2++;
+			compare_result = new ModifiedLine(itr1, itr2);
+
+			while( itr1 < subseq->src_st )
+				compare_result->add_src_str(data1[itr1++]);
+			while( itr2 < subseq->dst_st )
+				compare_result->add_dst_str(data2[itr2++]);
+			LOG("Modified Lines");
+		}
+		else if( itr1 == subseq->src_st && itr2 != subseq->dst_st )
+		{
+			compare_result = new AddedLine(itr1, itr2);
+
+			while( itr2 < subseq->dst_st )
+				compare_result->add_dst_str(data2[itr2++]);
+			LOG("Added Lines");
+		}
+		else if( itr2 == subseq->dst_st && itr1 != subseq->src_st )
+		{
+			compare_result = new DeletedLine(itr1, itr2);
+
+			while( itr1 < subseq->src_st )
+				compare_result->add_src_str(data1[itr1++]);
+			LOG("Deleted Lines");
+		}
+
+		itr1 = subseq->src_st + subseq->len;
+		itr2 = subseq->dst_st + subseq->len;
+
+		if( compare_result == nullptr )
 			continue;
-		}
-
-		//LOG("FOUND NON-MATCHING")
-
-		auto f_itr1 = find_first_of(itr1, data1.end(), itr2, data2.end());	//FIRST MATCHING POSITION IN data1, FROM [itr2, data2.end())
-		auto f_itr2 = find_first_of(itr2, data2.end(), itr1, data1.end());	//FIRST MATCHING POSITION IN data2, FROM [itr1, data1.end())
-
-		//LOG(*itr1)
-		//LOG(*itr2)
-		//LOG(*f_itr1)
-		//LOG(*f_itr2)
-
-		if( f_itr1 == data1.end() )	//means f_itr2 == data2.end()
-		{
-			LOG("UNABLE TO FIND NEXT MATCH")
-			break;
-		}
-
-		if( f_itr2 == itr2 )
-		{
-			compare_result = new DeletedLine(itr1-data1.begin(), itr2-data2.begin(), 0, string());
-			while( *itr1 != *itr2 )
-			{
-				compare_result->add_line(*itr1);
-				itr1++;
-			}
-		}
-		else if( f_itr1 == itr1 )
-		{
-			compare_result = new AddedLine(itr1-data1.begin(), itr2-data2.begin(), 0, string());
-			while( *itr2 != *itr1 )
-			{
-				compare_result->add_line(*itr2);
-				itr2++;
-			}
-		}
-		else	//(*f_itr1 == *f_itr2)
-		{
-			compare_result = new ModifiedLine(itr1-data1.begin(), itr2-data2.begin(), string(), string());
-			while( itr1 < f_itr1 )
-			{
-				compare_result->add_line(*itr1, string());
-				itr1++;
-			}
-			while( itr2 < f_itr2 )
-			{
-				compare_result->add_line(string(), *itr2);
-				itr2++;
-			}
-
-		}
 
 		//LOG(compare_result->marshall());
 		diff_result.push_back(compare_result);
 	}
-
-	if( itr1 == data1.end() && itr2 == data2.end() )
-		return diff_result;
-
-	if( itr2 == data2.end() )
-	{
-		compare_result = new DeletedLine(itr1-data1.begin(), itr2-data2.begin(), data1.end()-itr1, string());
-		while( itr1 != data1.end() )
-		{
-			compare_result->add_line(*itr1);
-			itr1++;
-		}
-	}
-	else if( itr1 == data1.end() )
-	{
-		compare_result = new AddedLine(itr1-data1.begin(), itr2-data2.begin(), data2.end()-itr2, string());
-		while( itr2 != data2.end() )
-		{
-			compare_result->add_line(*itr2);
-			itr2++;
-		}
-	}
-	else
-	{
-		compare_result = new ModifiedLine(itr1-data1.begin(), itr2-data2.begin(), string(), string());
-		while( itr1 != data1.end() )
-		{
-			compare_result->add_line(*itr1, string());
-			itr1++;
-		}
-		while( itr2 != data2.end() )
-		{
-			compare_result->add_line(string(), *itr2);
-			itr2++;
-		}
-	}
-
-	diff_result.push_back(compare_result);
-
 
 	return diff_result;
 }

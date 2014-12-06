@@ -27,8 +27,8 @@ public:
 
 	ResultTypes get_type()	{ return res_type; }
 
-	virtual void add_line(string str) { };
-	virtual void add_line(string str1, string str2) { };
+	virtual void add_src_str(string str) { };
+	virtual void add_dst_str(string str) { };
 
 	virtual string marshall(void) = 0;
 

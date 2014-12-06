@@ -6,19 +6,21 @@
 #include <sstream>
 using namespace std;
 
-ModifiedLine::ModifiedLine(long long src_index, long long dst_index, string src_str, string dst_str)
+ModifiedLine::ModifiedLine(long long src_index, long long dst_index)
 	: CompareResultInterface(ResultTypes::ADDED)
 {
 	src_line_index = src_index;
 	dst_line_index = dst_index;
-	if( !src_str.empty() )	src_lines.push_back(src_str);
-	if( !dst_str.empty() )	dst_lines.push_back(dst_str);
 }
 
-void ModifiedLine::add_line(string src_str, string dst_str)
+void ModifiedLine::add_src_str(string str)
 {
-	if( !src_str.empty() )		src_lines.push_back(src_str);
-	if( !dst_str.empty() )		dst_lines.push_back(dst_str);
+	src_lines.push_back(str);
+}
+
+void ModifiedLine::add_dst_str(string str)
+{
+	dst_lines.push_back(str);
 }
 
 string ModifiedLine::marshall(void)

@@ -6,15 +6,14 @@
 #include <sstream>
 using namespace std;
 
-AddedLine::AddedLine(long long src_index, long long dst_index, long long num3, string str)
+AddedLine::AddedLine(long long src_index, long long dst_index)
 	: CompareResultInterface(ResultTypes::ADDED)
 {
 	src_line_index = src_index;
 	dst_line_index = dst_index;
-	if( !str.empty() )	dst_lines.push_back(str);
 }
 
-void AddedLine::add_line(string str)
+void AddedLine::add_dst_str(string str)
 {
         dst_lines.push_back(str);
 }
