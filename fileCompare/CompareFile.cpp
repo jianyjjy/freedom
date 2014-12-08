@@ -7,11 +7,12 @@
 #include "AddedLine.h"
 #include "ModifiedLine.h"
 
-#include <vector>
 #include <fstream>
 #include <algorithm>
 #include <limits>
 #include <cmath>
+#include <vector>
+#include <numeric>
 using namespace std;
 
 #include <iostream>
@@ -25,6 +26,7 @@ struct CommonSubSeq
 	int len;
 };
 
+//Longest Common Sub-seqeuence algorithm
 CommonSubSeq* CompareFile::longest_common_subseq(deque<string> data1, int start1, int end1, deque<string>data2, int start2, int end2)
 {
 	CommonSubSeq* pLCS = new CommonSubSeq();
@@ -34,21 +36,21 @@ CommonSubSeq* CompareFile::longest_common_subseq(deque<string> data1, int start1
 
 	vector< vector<int> > lcs(data1.size(), vector<int>(data2.size(), 0) );
 	int lcs_len;
-	for( auto itr1 = start1 ; itr1 < end1 ; itr1++ )
+	for( auto src_itr = start1 ; src_itr < end1 ; src_itr++ )
 	{
-		for( auto itr2 = start2 ; itr2 < end2 ; itr2++ )
+		for( auto dst_itr = start2 ; dst_itr < end2 ; dst_itr++ )
 		{
-			if( data1[itr1] != data2[itr2] )
+			if( data1[src_itr] != data2[dst_itr] )
 				continue;
 
-			if( itr1 > start1 && itr2 > start2 )
-				lcs_len = lcs[itr1][itr2] = lcs[itr1-1][itr2-1] + 1;
+			if( src_itr > start1 && dst_itr > start2 )
+				lcs_len = lcs[src_itr][dst_itr] = lcs[src_itr-1][dst_itr-1] + 1;
 			else
-				lcs_len = lcs[itr1][itr2] = 1;
+				lcs_len = lcs[src_itr][dst_itr] = 1;
 			if( lcs_len > pLCS->len )
 			{
-				pLCS->src_st = itr1-lcs_len+1;
-				pLCS->dst_st = itr2-lcs_len+1;
+				pLCS->src_st = src_itr-lcs_len+1;
+				pLCS->dst_st = dst_itr-lcs_len+1;
 				pLCS->len = lcs_len;
 			}
 		}
@@ -68,6 +70,28 @@ void CompareFile::find_common_subseqs(deque<string> data1, int start1, int end1,
 	find_common_subseqs(data1, common_subseq->src_st + common_subseq->len, end1, data2, common_subseq->dst_st + common_subseq->len, end2, pCommonSeqs);
 
 	return;
+}
+
+//Getting maximum contiguous matches between 2 strings
+int CompareFile::get_match_count(string s1, string s2)
+{
+	//Addition of extra characters at end of 2nd string to match character count with rotating 1st string
+	//length(1st string) alwasy less then length(2nd string) ... useful for inner_product()
+	s2.append( s1.size()-1, ' ');
+
+	string t1 = s1;
+	int product;
+	int max_product = 0;
+	for(unsigned int i = 0 ; i < s1.length() ; i++ )
+	{
+		std::rotate(t1.begin(), t1.begin()+1, t1.end());
+		//inner_product to get count of matching characters between rotating 1st string & appended 2nd string
+		product = inner_product(t1.begin(), t1.end(), s2.begin()+i, 0, std::plus<int>(), std::equal_to<std::string::value_type>());
+		if( product > max_product )
+			max_product = product;
+	}
+
+	return max_product;
 }
 
 deque<CompareResultInterface*> CompareFile::compare(void)
@@ -118,41 +142,129 @@ deque<CompareResultInterface*> CompareFile::compare(void)
 
 	common_subseqs.push_back(final_empty_subseq);
 
-	int itr1 = 0;
-	int itr2 = 0;
+	int src_itr = 0;
+	int dst_itr = 0;
 	for( CommonSubSeq* subseq : common_subseqs )
 	{
 		CompareResultInterface* compare_result = nullptr;
 
-		if( itr1 != subseq->src_st && itr2 != subseq->dst_st )
+		if( src_itr != subseq->src_st && dst_itr != subseq->dst_st )
 		{
-			compare_result = new ModifiedLine(itr1, itr2);
+//Modified block
+			int modified_match;
+			int max_modified_match = 0;
+			int src_closest_match, dst_closest_match;
+			LOG("Getting closest match in modified lines");
+			for( auto src = src_itr ; src < subseq->src_st ; src++ )
+			{
+				for( auto dst = dst_itr ; dst < subseq->dst_st ; dst++ )
+				{
+					modified_match = get_match_count(data1[src], data2[dst]);
+					if( max_modified_match < modified_match )
+					{
+						max_modified_match = modified_match;
+						src_closest_match = src;
+						dst_closest_match = dst;
+					}
+				}
+			}
 
-			while( itr1 < subseq->src_st )
-				compare_result->add_src_str(data1[itr1++]);
-			while( itr2 < subseq->dst_st )
-				compare_result->add_dst_str(data2[itr2++]);
+			LOG("Closest match found at");
+			LOG(src_closest_match);
+			LOG(dst_closest_match);
+
+//At start of Modified block : Added or Deleted block
+			compare_result = nullptr;
+			if ( (src_closest_match - src_itr) < (dst_closest_match - dst_itr) )
+			{
+				LOG("Added lines before closest match");
+				LOG(src_itr);
+				LOG(dst_itr);
+
+				compare_result = new AddedLine(src_itr, dst_itr);
+				while ( (src_closest_match - src_itr) != (dst_closest_match - dst_itr) )
+					compare_result->add_dst_str(data2[dst_itr++]);
+			}
+			else if ( (src_closest_match - src_itr) > (dst_closest_match - dst_itr) )
+			{
+				LOG("Deleted lines before closest match");
+				LOG(src_itr);
+				LOG(dst_itr);
+
+				compare_result = new DeletedLine(src_itr, dst_itr);
+				while ( (src_closest_match - src_itr) != (dst_closest_match - dst_itr) )
+					compare_result->add_src_str(data1[src_itr++]);
+			}
+			else
+				LOG("No added or deleted lines before closest match");
+
+			if( compare_result )
+				diff_result.push_back(compare_result);
+
+//Actual modified block
 			LOG("Modified Lines");
-		}
-		else if( itr1 == subseq->src_st && itr2 != subseq->dst_st )
-		{
-			compare_result = new AddedLine(itr1, itr2);
+			LOG(src_itr);
+			LOG(dst_itr);
+			compare_result = new ModifiedLine(src_itr, dst_itr);
+			while ( (subseq->src_st - src_itr) > 0 && (subseq->dst_st - dst_itr) > 0 )
+			{
+				compare_result->add_src_str(data1[src_itr++]);
+				compare_result->add_dst_str(data2[dst_itr++]);
+			}
+			diff_result.push_back(compare_result);
 
-			while( itr2 < subseq->dst_st )
-				compare_result->add_dst_str(data2[itr2++]);
+
+
+//At end of Modified block : Added or Deleted block
+			compare_result = nullptr;
+			if ( (subseq->dst_st - dst_itr) > 0 )
+			{
+				LOG("Added lines after closest match");	
+				LOG(src_itr);
+				LOG(dst_itr);
+
+				compare_result = new AddedLine(src_itr, dst_itr);
+                        	while( dst_itr < subseq->dst_st )
+                                	compare_result->add_dst_str(data2[dst_itr++]);
+			}
+			else if ( (subseq->src_st - src_itr) > 0 )
+			{
+				LOG("Deleted lines after closest match");
+				LOG(src_itr);
+				LOG(dst_itr);
+
+				compare_result = new DeletedLine(src_itr, dst_itr);
+				while( src_itr < subseq->src_st )
+                                	compare_result->add_src_str(data1[src_itr++]);
+			}
+			else
+			{
+				LOG("Invalid state of code");
+				LOG(src_itr);
+				LOG(dst_itr);
+			}
+		}
+		else if( src_itr == subseq->src_st && dst_itr != subseq->dst_st )
+		{
+//Added block in Destination
+			compare_result = new AddedLine(src_itr, dst_itr);
+
+			while( dst_itr < subseq->dst_st )
+				compare_result->add_dst_str(data2[dst_itr++]);
 			LOG("Added Lines");
 		}
-		else if( itr2 == subseq->dst_st && itr1 != subseq->src_st )
+		else if( dst_itr == subseq->dst_st && src_itr != subseq->src_st )
 		{
-			compare_result = new DeletedLine(itr1, itr2);
+//Deleted block from Source
+			compare_result = new DeletedLine(src_itr, dst_itr);
 
-			while( itr1 < subseq->src_st )
-				compare_result->add_src_str(data1[itr1++]);
+			while( src_itr < subseq->src_st )
+				compare_result->add_src_str(data1[src_itr++]);
 			LOG("Deleted Lines");
 		}
 
-		itr1 = subseq->src_st + subseq->len;
-		itr2 = subseq->dst_st + subseq->len;
+		src_itr = subseq->src_st + subseq->len;
+		dst_itr = subseq->dst_st + subseq->len;
 
 		if( compare_result == nullptr )
 			continue;

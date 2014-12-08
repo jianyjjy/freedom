@@ -20,6 +20,8 @@ class CompareFile
 	CommonSubSeq* longest_common_subseq(deque<string> data1, int start1, int end1, deque<string>data2, int start2, int end2);
 	void find_common_subseqs(deque<string> data1, int start1, int end1, deque<string> data2, int start2, int end2, deque<CommonSubSeq*>* pCommonSeqs);
 
+	int get_match_count(string s1, string s2);
+
 public :
 	CompareFile() 	{ first_file = "";	second_file = ""; }
 	~CompareFile()	{ }
