@@ -8,9 +8,6 @@
 #include "ModifiedLine.h"
 
 #include <fstream>
-#include <algorithm>
-#include <limits>
-#include <cmath>
 #include <vector>
 #include <numeric>
 using namespace std;
@@ -75,8 +72,8 @@ void CompareFile::find_common_subseqs(deque<string> data1, int start1, int end1,
 //Getting maximum contiguous matches between 2 strings
 int CompareFile::get_match_count(string s1, string s2)
 {
-	//Addition of extra characters at end of 2nd string to match character count with rotating 1st string
-	//length(1st string) alwasy less then length(2nd string) ... useful for inner_product()
+	//Addition of extra characters at end of 2nd string to match character count within 1st string
+	//length(1st string) always less then length(2nd string) ... useful for inner_product()
 	s2.append( s1.size()-1, ' ');
 
 	string t1 = s1;
@@ -84,9 +81,8 @@ int CompareFile::get_match_count(string s1, string s2)
 	int max_product = 0;
 	for(unsigned int i = 0 ; i < s1.length() ; i++ )
 	{
-		std::rotate(t1.begin(), t1.begin()+1, t1.end());
-		//inner_product to get count of matching characters between rotating 1st string & appended 2nd string
-		product = inner_product(t1.begin(), t1.end(), s2.begin()+i, 0, std::plus<int>(), std::equal_to<std::string::value_type>());
+		//inner_product to get count of matching characters between 1st string & appended 2nd string
+		product = inner_product(t1.begin()+i, t1.end(), s2.begin(), 0, std::plus<int>(), std::equal_to<std::string::value_type>());
 		if( product > max_product )
 			max_product = product;
 	}
